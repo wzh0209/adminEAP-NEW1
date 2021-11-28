@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+<!--本xml片段为代码生成器生成，时间：2017-10-17 11:38:08-->
+    <query id="employee" key="id" tableName="员工信息查询列表" className="com.radish.master.entity.Employee" widthType="px">
+            <column key="rowIndex" header="序号" width="80"/>
+            <column key="id" header="编号" classType="String" allowSort="true" width="150"/>
+            <column key="name" header="姓名" classType="String" allowSort="true" width="150" operator="like"/>
+            <column key="sex" header="性别" classType="String" width="150"/>
+            <column key="birthday" header="出生日期" classType="java.util.Date" operator="between" width="150" dateFormat="yyyy-mm-dd"/>
+            <column key="nation" header="民族" classType="String" width="150"/>
+            <column key="nativeplace" header="籍贯" classType="String" width="150"/>
+            <column key="political" header="政治面貌" classType="String" width="150"/>
+            <column key="marriage" header="婚姻状况" classType="String" width="150"/>
+            <column key="birthplace" header="出生地" classType="String" width="150"/>
+    </query>
+
+    
+    <!-- 员工信息查询 -->
+    <query id="employee_list" key="id" tableName="员工列表" className="com.cnpc.framework.base.entity.User"
+        pageSize="10"  widthType="px" order="id asc">
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="deptId" header="所在部门" align="left" width="100" fnRender="fnRenderDept"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生年月" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="loginName" header="登录名" operator="like" width="80" allowSort="true" />
+        <column key="email" header="邮箱" align="left" operator="eq" width="100"  />
+        <column key="mobile" header="手机" operator="eq" width="200" align="center"/>
+        <column key="qq" header="QQ" operator="eq" width="200" align="center" />
+    </query>
+    
+    <!-- 员工信息管理 -->
+    <query id="employee_manage" key="id" tableName="员工列表" 
+        pageSize="10"  widthType="px" >
+        <sql>
+	        <![CDATA[
+	          SELECT t.id id,t.version version,t.name name,t.dept_id deptId
+	          ,t.sex sex,t.birthday birthday,t.login_name loginName,
+	          t.email email,t.mobile mobile,t.qq qq,t.audit_status auditStatus,t.deptent deptent,t.zzStatus zzStatus
+	          ,t.zzFaildDesc zzFaildDesc
+	          FROM
+                 tbl_user t
+                 WHERE 1=1 and t.audit_status is not null and t.audit_status<>'50' order by  t.audit_status
+	        ]]>
+	    </sql>
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="deptId" header="所在部门" align="left" width="100" fnRender="fnRenderDept"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生年月" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="loginName" header="登录名" operator="like" width="80" allowSort="true" />
+        <column key="email" header="邮箱" align="left" operator="eq" width="100"  />
+        <column key="mobile" header="手机" operator="eq" width="200" align="center"/>
+        <column key="qq" header="QQ" operator="eq" width="200" align="center" />
+        <column key="auditStatus" header="审核状态" width="50" operator="in" allowSort="true" render="10=正常,20=离职待审核,30=新增待审核,50=离职"/>
+        <column key="zzStatus" header="转正状态" width="50"  render="0=试用期,10=用人部门审核,20=办公室意见,30=副经理审核,40=总经理审核,50=正式员工,60=转正驳回"/>
+    	<column key="id" header="操作" width="50"  fnRender="fnRenderSubmit"/>
+    </query>
+    <!-- 员工信息审核 -->
+    <query id="employee_audit" key="id" tableName="员工列表" className="com.cnpc.framework.base.entity.User" pageSize="10"  widthType="px" order="id asc">
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="deptId" header="所在部门" align="left" width="100" fnRender="fnRenderDept"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生年月" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="loginName" header="登录名" operator="like" width="80" allowSort="true" />
+        <column key="email" header="邮箱" align="left" operator="eq" width="100"  />
+        <column key="mobile" header="手机" operator="eq" width="200" align="center"/>
+        <column key="qq" header="QQ" operator="eq" width="200" align="center" />
+        <column key="auditStatus" header="审核状态" width="50" operator="in" allowSort="true" render="10=正常,20=离职待审核,30=新增待审核,50=离职"/>
+    </query>
+    
+    <!-- 职务列表 -->
+	<query id="job_auth_list" key="id" tableName="角色列表" className="com.cnpc.framework.base.entity.Dict" pageSize="100" widthType="px" allowPaging="false">
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="id" hidden="true"/> 
+		<column key="version" header="version" hidden="true"/>
+		<column key="name" header="名称" width="100" allowSort="true" />
+		<column key="code" header="编码" width="100" allowSort="true"/>
+		<column key="remark" header="备注" width="100" allowSort="false" /> 
+	</query>
+	
+    <query id="job_role_list" key="id" tableName="职务角色列表" className="com.radish.master.entity.common.JobRole" pageSize="100" widthType="px" allowPaging="false">
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="id" hidden="true"/> 
+		<column key="version" header="version" hidden="true"/>
+		<column key="roleName" header="名称" width="100" allowSort="true" />
+	</query>
+
+<!-- 员工信息查询 -->
+    <query id="employee_list_leave" key="id" tableName="离职员工列表" className="com.radish.master.entity.UserLeave"
+        pageSize="10"  widthType="px" order="id asc">
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="deptId" header="离职前所在部门" align="left" width="100" fnRender="fnRenderDept"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生年月" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="loginName" header="登录名" operator="like" width="80" allowSort="true" />
+        <column key="email" header="邮箱" align="left" operator="eq" width="100"  />
+        <column key="mobile" header="手机" operator="eq" width="200" align="center"/>
+        <column key="qq" header="QQ" operator="eq" width="200" align="center" />
+    </query>
+    
+    <query id="employee_list_leaveLook" key="id" tableName="个人离职查看列表" className="com.radish.master.entity.UserLeave"
+        pageSize="10"  widthType="px" order="id asc">
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" width="100" />
+        <column key="leaveTime" header="离职时间"  width="80"  dateFormat="yyyy-mm-dd" />
+        <column key="leaveReason" header="离职原因" width="80"  />
+        <column key="leaveStatus" header="审核状态"  width="200" render="5=部门审核,6=人力审核,7=财务审核,10=行政审核,30=总经理审核,40=审核通过,50=驳回"/>
+    	<column key="id" header="操作" width="50"  fnRender="fnRenderSubmit"/>
+    </query>
+    <query id="employee_list_leaveBmsh" key="id" tableName="个人离职部门审核列表" className="com.radish.master.entity.UserLeave"
+        pageSize="10"  widthType="px" order="id asc">
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" width="100" />
+        <column key="leaveTime" header="离职时间"  width="80"  dateFormat="yyyy-mm-dd" />
+        <column key="leaveReason" header="离职原因" width="80"  />
+        <column key="leaveStatus" header="审核状态"  width="200" render="5=部门审核,6=人力审核,7=财务审核,10=行政审核,30=总经理审核,40=审核通过,50=驳回"/>
+    	<column key="id" header="操作" width="50"  fnRender="fnRenderXQ"/>
+    </query>
+    <!-- 人员待转正列表 -->
+    <query id="employee_list_zz" key="id" tableName="人员待转正列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT *
+		          FROM
+                  tbl_user
+                  WHERE 1=1 and hireDate is not null and  DATE_SUB(DATE_ADD(hireDate, INTERVAL 2 MONTH),INTERVAL 1 WEEK)<now()
+ 				  and zzStatus <>'50' and audit_status='10'
+		        ]]>
+		    </sql>
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="dept_id" header="所在部门" align="left" width="100" fnRender="fnRenderDept"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生年月" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="hireDate" header="入职时间" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="zzStatus" header="转正状态" width="50"  render="0=试用期,10=用人部门审核,20=办公室意见,30=副经理审核,40=总经理审核,50=正式员工,60=转正驳回"/>
+		<column key="id" header="操作" width="50"  fnRender="fnRenderSubmit"/>
+	</query>
+	<!-- 部门领导审批 -->
+		<query id="employee_list_deptAuidt" key="id" tableName="人员待转正列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT *
+		          FROM
+                  tbl_user
+                  WHERE 1=1 and zzStatus ='10' and audit_status='10'
+		        ]]>
+		    </sql>
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="dept_id" header="所在部门" align="left" width="100" fnRender="fnRenderDept"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生年月" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="hireDate" header="入职时间" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="zzStatus" header="转正状态" width="50"  allowSort="true" render="0=试用期,10=用人部门审核,20=办公室意见,30=副经理审核,40=总经理审核,50=正式员工,60=转正驳回"/>
+		<column key="id" header="操作" width="50"  fnRender="fnRenderSubmit"/>
+	</query>
+</queryContext>

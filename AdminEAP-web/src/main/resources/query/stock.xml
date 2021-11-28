@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+<!--本xml片段为代码生成器生成，时间：2017-10-17 11:38:08-->
+	<query id="stock_list" key="id" tableName="库存信息列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT s.ID  id, p.project_code projectCode,p.id projectId, p.project_name projectName,
+                  s.mat_ID matID, m.mat_name matName, s.stock_Num stockNum,u.`name` storagePersonName, 
+                  s.storage_time storageTime, s.useType useType,m.mat_standard matStandard FROM
+                  tbl_stock s, tbl_materiel m, tbl_project p, tbl_user u
+                  WHERE 1=1 and s.project_ID = p.id AND s.mat_ID = m.mat_number AND s.storage_person_ID = u.id
+		        ]]>
+		    </sql>
+		    <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+	        <column key="id" header="库存编号" classType="String" allowSort="true" width="150" hidden="true"/>
+		    <column key="projectName" header="所属项目" classType="String" allowSort="true" width="150"/>
+	        <column key="matID" header="物料编号" classType="String" width="150" />
+			<column key="matName" header="物料名" classType="String" width="150"/>
+			<column key="matStandard" header="物料规格" classType="String" width="150"/>
+	        <column key="stockNum" header="当前库存" classType="java.lang.Integer" width="150"/>
+	        <column key="storagePersonName" header="入库人员" classType="String" width="150"/>
+	        <column key="storageTime" header="入库时间" classType="Date" id="s.storage_time" operator="between" width="150" dateFormat="yyyy-mm-dd"/>
+	        <column key="useType" header="操作类型" classType="String" width="150" render="1=采购入库,2=调度入库,3=消耗出库,4=调度出库,5=初始化入库"/>
+	</query>
+
+	<query id="stock_history_list" key="id" tableName="历史库存信息列表" widthType="px">
+		<sql>
+			<![CDATA[
+		       SELECT s.ID  id, s.project_ID projectID,p.project_code projectCode, p.project_name projectName, s.budget_ID budgetID,s.mat_ID matID, m.mat_name matName, m.unit unit,m.mat_standard mat_standard,
+				s.stock_change_Num stockChangeNum,	s.useTpye useTpye,	s.operation_person_ID operationPersonID,	u.`name` userName,
+				s.operation_time operationTime, s.stock_Source stockSource
+				FROM	tbl_stock_history s,	tbl_project p,	tbl_materiel m,	tbl_user u
+				WHERE	1=1 and s.project_ID = p.id	AND s.mat_ID = m.mat_number	AND s.operation_person_ID = u.id
+		        ]]>
+		</sql>
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="库存编号" classType="String" allowSort="true" width="150" hidden="true"/>
+		<column key="projectName" header="所属项目" classType="String" allowSort="true" width="150"/>
+		<column key="matID" header="物料编号" classType="String" width="150" />
+		<column key="matName" header="物料名" classType="String" width="150"/>
+		<column key="stockChangeNum" header="库存变更量" classType="java.lang.Integer" width="150"/>
+		<column key="unit" header="单位" classType="String" width="150"/>
+		<column key="mat_standard" header="规格" classType="String" width="150"/>
+		<!--<column key="operationPersonID" header="操作人员编号" classType="String" width="150"/>-->
+		<column key="userName" header="操作人员姓名" classType="String" width="150"/>
+		<column key="operationTime" header="操作时间" classType="Date" id="s.operation_time" operator="between" allowSort="true"  width="150" dateFormat="yyyy-mm-dd"/>
+		<column key="useTpye" header="操作类型" classType="String" width="150"  render="1=采购入库,2=调度入库,3=消耗出库,4=调度出库,5=初始化入库"/>
+		<column key="stockSource" header="来源/流向" classType="String" width="150"/>
+	</query>
+
+	<query id="stock_channel_list" key="id" tableName="历史库存信息列表" widthType="px">
+		<sql>
+			<![CDATA[
+		       select c.id id, c.supplier supplier,c.area area,c.price price,sc.mat_id,sc.project_id from tbl_channel c, tbl_stock_channel sc WHERE 1=1 and sc.channel_id=c.id
+		        ]]>
+		</sql>
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="supplier" header="供应商" classType="String" width="150"/>
+		<column key="area" header="供应商所在地" classType="String"  width="150"/>
+		<column key="price" header="单价" classType="String"  width="150"/>
+	</query>
+
+
+
+	<query id="stock_out_list" key="id" tableName="物料申请单列表" widthType="px">
+		<sql>
+			<![CDATA[
+			select t.id id, t.create_date_time createTime, p.project_name projectName,t.budget_no budgetNo from tbl_purchase t ,tbl_project p where 1=1 and t.project_id = p.id and t.status='10'
+			]]>
+		</sql>
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="申请单编号" classType="String" width="150"/>
+		<column key="createTime" header="申请时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+		<column key="projectName" header="所属项目名" classType="String"  width="150" />
+		<column key="budgetNo" header="所属预算编号" classType="String"  width="150" />
+	</query>
+	
+	<query id="dispatchDetail_list" key="id" tableName="调度单明细" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT 
+		          dd.id id ,dd.dispatch_id dispatch_id,dd.quantity quantity ,c.mat_Id matNumber ,c.mat_name matName , c.supplier supplier ,
+		          c.price price ,c.area area ,m.unit unit
+		          FROM
+                  tbl_channel c ,tbl_dispatch_detail dd ,tbl_materiel m
+                  WHERE 1=1 and dd.channel_id = c.id and m.mat_number = c.mat_ID 
+		        ]]>
+		    </sql>
+		    <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+	        <column key="id" header="调度单明细id" classType="String" hidden="true"/>
+	        <column key="matName" header="物料名称" classType="String" width="150" allowSort="true"/>
+		    <column key="matNumber" header="物料编号" classType="String"  width="150"/>
+	        <column key="unit" header="单位" classType="String" width="150"/>
+	        <column key="supplier" header="供应商" classType="String" width="150" />
+			<column key="price" header="价格" classType="java.lang.Double" width="150"/>
+	        <column key="quantity" header="数量" classType="String" width="150"/>
+	        <column key="area" header="地区" classType="String" width="150"/>
+	</query>
+	
+	<query id="dispatch_list" key="id" tableName="调度单列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT 
+		          p.purchase_name purchase_name , d.create_date_time create_date_time,pmb.project_name mbName ,
+		          ply.project_name lyName , d.source_project_id sourceId , d.target_project_id targetId ,
+		          d.id id ,d.status status 
+		          FROM
+                  tbl_purchase p ,tbl_dispatch d ,tbl_project pmb,tbl_project ply
+                  WHERE 1=1 and d.purchase_id = p.id and d.source_project_id = ply.id and d.target_project_id = pmb.id and d.status = '10'
+		        ]]>
+		    </sql>
+		    <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+	        <column key="id" header="调度单id" classType="String" hidden="true"/>
+	        <column key="purchase_name" header="调度单编号" classType="String" width="150" allowSort="true"/>
+		    <column key="lyName" header="来源库" classType="String"  width="150"/>
+	        <column key="mbName" header="目标库" classType="String" width="150"/>
+			<column key="create_date_time" header="创建时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+			<column key="status" header="调度状态" classType="String" width="150"  render="10=新建,20=调度出库,30=调度入库,60=调度完成"/>
+	</query>
+	<query id="dispatch_list_rk" key="id" tableName="调度单列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT 
+		          p.purchase_name purchase_name , d.create_date_time create_date_time,pmb.project_name mbName ,
+		          ply.project_name lyName , d.source_project_id sourceId , d.target_project_id targetId ,
+		          d.id id ,d.status status 
+		          FROM
+                  tbl_purchase p ,tbl_dispatch d ,tbl_project pmb,tbl_project ply
+                  WHERE 1=1 and d.purchase_id = p.id and d.source_project_id = ply.id and d.target_project_id = pmb.id and d.status = '20'
+		        ]]>
+		    </sql>
+		    <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+	        <column key="id" header="调度单id" classType="String" hidden="true"/>
+	        <column key="purchase_name" header="调度单编号" classType="String" width="150" allowSort="true"/>
+		    <column key="lyName" header="来源库" classType="String"  width="150"/>
+	        <column key="mbName" header="目标库" classType="String" width="150"/>
+			<column key="create_date_time" header="创建时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+			<column key="status" header="调度状态" classType="String" width="150"  render="10=新建,20=调度出库,60=调度完成"/>
+	</query>
+	<query id="dispatch_list_gl" key="id" tableName="调度单管理列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT 
+		          p.purchase_name purchase_name , d.create_date_time create_date_time,pmb.project_name mbName ,
+		          ply.project_name lyName , d.source_project_id sourceId , d.target_project_id targetId ,
+		          d.id id ,d.status status 
+		          FROM
+                  tbl_purchase p ,tbl_dispatch d ,tbl_project pmb,tbl_project ply
+                  WHERE 1=1 and d.purchase_id = p.id and d.source_project_id = ply.id and d.target_project_id = pmb.id 
+		        ]]>
+		    </sql>
+		    <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+	        <column key="id" header="调度单id" classType="String" hidden="true"/>
+	        <column key="purchase_name" header="调度单名称" classType="String" width="150" allowSort="true"/>
+		    <column key="lyName" header="来源库" classType="String"  width="150"/>
+	        <column key="mbName" header="目标库" classType="String" width="150"/>
+			<column key="create_date_time" header="创建时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+			<column key="status" header="调度状态" classType="String" width="150"  render="10=新建,20=调度出库,30=调度入库,60=调度完成"/>
+	</query>
+	
+	<query id="stockDet_ck" key="id" tableName="库存详情查看列表" widthType="px">
+			<sql>
+		        <![CDATA[
+		          SELECT 
+		          kcqd.id id , kcqd.available_num available_num,kcqd.create_date_time create_date_time ,
+				  qd.price price ,qd.supplier supplier  ,kcqd.mat_id mat_id,kcqd.project_id project_id       
+		          FROM 
+                  tbl_stock_channel kcqd ,tbl_channel qd 
+                  WHERE 1=1 and kcqd.channel_id = qd.id 
+		        ]]>
+		    </sql>
+		    <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+	        <column key="id" header="库存渠道id" classType="String" hidden="true"/>
+	        <column key="supplier" header="供应商" classType="String" width="150" />
+		    <column key="available_num" header="可用数量" classType="String"  width="150"/>
+	        <column key="price" header="单价" classType="String" width="150"/>
+			<column key="create_date_time" header="入库时间" classType="String" width="150" dateFormat="yyyy-mm-dd" allowSort="true"/>
+	</query>
+	
+</queryContext>

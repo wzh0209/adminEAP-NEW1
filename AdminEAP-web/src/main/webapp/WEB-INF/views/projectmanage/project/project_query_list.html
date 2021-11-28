@@ -1,0 +1,235 @@
+<section class="content-header">
+    <h1>
+        项目信息查询
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">项目信息</a></li>
+        <li class="active">项目信息查询</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+        <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs pull-right">
+                    <li><a href="#tab-content-edit" data-toggle="tab" id="nav-tab-detail"><i class="fa fa-edit"></i></a></li>
+                    <li class="active"><a href="#tab-content-list" data-toggle="tab" id="nav-tab-list"><i class="fa fa-list-ul"></i></a></li>
+                    <li class="pull-left header"><i class="fa fa-user"></i><small>项目列表</small></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-content-list">
+                        <div class="box">
+			                <!-- /.box-header -->
+			                <div class="dataTables_filter" id="searchDiv" style="display: none">
+			                   <input type="search" placeholder="请输入项目名" title="项目名" name="project_name" class="form-control" id="project_name" operator="like" likeOption="true">
+			                   <input type="search" placeholder="请输入责任人" title="责任人" name="charge_name" class="form-control" id="charge_name" operator="like" likeOption="true">
+			                    <div class="btn-group">
+			                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+			                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+			                    </div>
+			                </div>
+			                <div class="box-body box-body-mobile">
+			                    <table id="project_query_table" class="table table-bordered table-striped table-hover">
+			                    </table>
+			                </div>
+		                </div>
+                    </div>
+                    <div class="tab-pane" id="tab-content-edit">
+                        <form id="detail-form" name="detail-form" class="form-horizontal">
+	                        <input type="hidden" name="id">
+	                        <div class="box box-info">
+	                            <div class="box-header with-border">
+	                                <span>
+	                                    <i class="fa fa-edit">项目信息</i>
+	                                </span>
+	                            </div>
+		                        <div class="box-body">
+		                            <!-- 内容 -->
+		                            <div class="col-md-12">
+			                            <div class="form-group">
+			                                <label class="col-sm-3 control-label">项目编号<span style="color:red">*</span></label>
+			                                <div class="col-sm-6">
+			                                    <input type="text" class="form-control" id="projectCode" name="projectCode" readonly="readonly">
+			                                </div>
+			                            </div> 
+			                            <div class="form-group">
+			                                <label class="col-sm-3 control-label">项目名称<span style="color:red">*</span></label>
+			                                <div class="col-sm-6">
+			                                    <input type="text" class="form-control" id="projectName" name="projectName" readonly="readonly">
+			                                </div>
+			                            </div>
+			                            <div class="form-group">
+			                                <label class="col-sm-3 control-label">项目负责人<span style="color:red">*</span></label>
+			                                <div class="col-sm-5">
+			                                    <input type="text" class="form-control" id="projectManager" name="projectManager" readonly="readonly">
+			                                </div>
+			                            </div>
+			                        </div>
+		                        </div>
+	                        </div>
+	                        <div class="box box-success">
+	                            <div class="box-header with-border">
+	                                <span>
+	                                    <i class="fa fa-files-o">项目文件信息</i>
+	                                </span>
+	                            </div>
+		                        <div class="box-body">
+		                            <!-- 内容 -->
+		                            <div class="form-group">
+	                                    <div class="col-sm-1">
+                                        </div>
+	                                    <div class="col-sm-1">
+	                                        <a class="btn btn-app">
+	                                           <span class="badge bg-yellow"></span>
+	                                           <i class="fa fa-bullhorn"></i>安全文明文件
+	                                           <input type="hidden" name="saftyFileField" id="saftyFileField"/>
+	                                        </a>
+	                                    </div>
+	                                    <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>施工合同
+                                               <input type="hidden" name="constructionFileField" id="constructionFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>招标文件
+                                               <input type="hidden" name="bidsFileField" id="bidsFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>中标文件
+                                               <input type="hidden" name="bidsWinFileField" id="bidsWinFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>中标通知文件
+                                               <input type="hidden" name="bidsWinNoticeFileField" id="bidsWinNoticeFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>工程质量文件
+                                               <input type="hidden" name="qualityFileField" id="qualityFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>预算成本分析表
+                                               <input type="hidden" name="costFileField" id="costFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>工程进度文件
+                                               <input type="hidden" name="scheduleFileField" id="scheduleFileField"/>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <a class="btn btn-app">
+                                               <span class="badge bg-yellow"></span>
+                                               <i class="fa fa-bullhorn"></i>其它文件
+                                               <input type="hidden" name="otherFileField" id="otherFileField"/>
+                                            </a>
+                                        </div>
+	                                </div> 
+		                        </div>
+	                        </div>
+                        </form>
+                        <!-- /.box -->
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var projectQueryTable, winId = "projectQueryWin";
+    
+    var projectQueryObject = {
+    		showDetail: function (rowId) {
+    			var detailForm=$("#detail-form").form();
+                detailForm.clearForm();
+                setTitle("查看详情")
+                $("#nav-tab-detail").click();
+                ajaxPost(basePath+"/project/detail/"+rowId,null,function(data){
+                    detailForm.initFormData(data);
+                    $('.btn-app').each(function(){
+                    	var count = 0,
+                    	fields = $('input', $(this)).val();
+                    	if(fields != "") count = fields.split(',').length
+                    	if(count > 0){
+                    		$('.badge',$(this)).html(count);
+                    	}
+                    });
+                });
+            },
+            detail: function (laborID){
+                modals.openWin({
+                    winId:winId,
+                    title:'子项',
+                    width:'1100px',
+                    url:basePath+"/project/detail/" + laborID
+                   });
+            }
+    }
+    
+    $(function (){
+        projectQueryTable = new CommonTable("project_query_table", "project_query_list", "searchDiv", null);
+        
+        $("#nav-tab-list").on("click",function(){
+            setTitle("项目列表");
+        });
+        
+        $('.btn-app').on("click",function(){
+        	var fields = $('input', $(this)).val();
+        	if(fields == "") return false;
+        	var title = $(this).text();
+		    modals.openWin({
+			    winId: "fileWin",
+			    width: "900px",
+			    url: basePath + "/project/projectdetailfile?fields=" + encodeURI(fields),
+			    title: title
+		    });
+        });
+        
+    });
+    
+    function fnRenderManager(value) {
+        if (value) {
+            var ret=value;
+            ajaxPost(basePath + "/project/show/"+value, null, function (data) {
+                ret=data.data;
+            })
+            return ret;
+        } else
+            return value;
+    }
+    
+    function fnRenderDetail(value) {
+    	var oper = "";
+        oper += "<a href='javascript:void(0)' onclick='projectQueryObject.showDetail(\"" + value + "\")'>详情</a>";
+        oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='projectQueryObject.detail(\"" + value + "\")'>查看子项</a>";
+        return oper;
+    }
+    
+    function setTitle(title){
+        $("ul.nav-tabs li.header small").text(title);
+    }
+    
+</script>

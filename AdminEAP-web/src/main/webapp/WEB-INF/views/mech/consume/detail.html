@@ -1,0 +1,90 @@
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-files-o">机械预算条目</i>
+                    </span>
+                </div>
+                <form id="consume-detail-form" name="mech-detail-form" class="form-horizontal">
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">所属项目<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="projectName" name="projectName" placeholder="所属项目" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">本次上报代号<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="上报代号" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">本次上报机械条目<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="mechName" name="mechName" placeholder="所属条目" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">机械人工消耗总额</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="mechLabour" name="mechLabour" placeholder="机械人工消耗总额" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">机械人工消耗工程量</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" id="mechLabourVolume" name="mechLabourVolume" rows="5" cols="100" placeholder="有机械人工消耗总额时必填"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-files-o">上报明细</i>
+                    </span>
+                </div>
+                <div class="dataTables_filter" id="searchDiv" style="display:none;">
+                   <input type="search" name="consumeID" id="consumeID" class="form-control" operator="eq" style="display:none;">
+                </div>
+                <div class="box-body box-body-mobile">
+                    <!-- 内容 -->
+                    <table id="consume_detail_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var form, consumeDetailTable;
+    var id = "${id}";
+    $('#entryID').val(id);
+    $(function () {
+    	consumeDetailTable = new CommonTable("consume_detail_table", "mech_consume_detail_overview", "searchDivDetail", null);
+        //初始化表单 
+        form = $("#consume-detail-form").form({baseEntity:false});
+        //初始化控件
+        form.initComponent();
+        
+        //编辑回填
+        if(id!="0"){
+            ajaxPost(basePath+"/mech/consume/get",{id:id},function(data){
+                form.initFormData(data);
+            })
+        }
+        
+    });
+   
+
+</script>

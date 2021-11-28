@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+    
+    <query id="fixedassets_apply_list" key="id" tableName="请购表" className="com.radish.master.entity.fixedassets.FixedAssetsPur" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="purNo" header="编号" width="150"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="deptName" header="部门" allowSort="true" width="150"/>
+        <column key="applyer" header="申请人" width="150"/>
+        <column key="createDateTime" header="申请时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="status" header="状态" width="80" render="10=新建,11=总经理审批,12=采购员填写渠道,13=总经理审批渠道,14=上传合同,15=合同评审,21=项目经理审批,22=总经理审批,23=采购员编辑渠道,24=选择采购渠道,31=总经理审批,40=已生成采购单,50=部分入库,60=已全部入库"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_apply_tx_list" key="id" tableName="请购表明细" className="com.radish.master.entity.fixedassets.FixedAssetsPurTx" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="englishName" header="英文名称" width="150"/>
+        <column key="model" header="型号" width="150"/>
+        <column key="norm" header="规格" width="150"/>
+        <column key="unit" header="单位" width="150"/>
+        <column key="quantity" header="数量" width="150"/>
+        <column key="vendor" header="生产厂商" width="150"/>
+        <column key="price" header="单价" width="150"/>
+        <column key="channelName" header="供应商" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_apply_tx_stk_list" key="id" tableName="请购表明细" className="com.radish.master.entity.fixedassets.FixedAssetsPurTx" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="englishName" header="英文名称" width="150"/>
+        <column key="model" header="型号" width="150"/>
+        <column key="norm" header="规格" width="150"/>
+        <column key="unit" header="单位" width="150"/>
+        <column key="quantity" header="数量" width="150"/>
+        <column key="quantityStk" header="已入库数量" width="150"/>
+        <column key="quantityRecent" header="本次入库数量" width="150"/>
+        <column key="vendor" header="生产厂商" width="150"/>
+        <column key="price" header="单价" width="150"/>
+        <column key="channelName" header="供应商" width="150"/>
+    </query>
+    
+    <query id="fixedassets_stock_list" key="id" tableName="库存查看表"  widthType="px" pageSize="20">
+        <sql>
+            <![CDATA[
+              select a.id,a.name,a.english_name englishName,a.fa_type faType,
+              a.keeped_dept_name keepedDeptName,a.model,a.belonged_stock belongedStock,
+              a.price,a.quantity,a.quantity_avl quantityAvl,a.vendor,a.keeped_dept_id keepedDeptID 
+               from tbl_fixedassets_stk a where  quantity_avl>0.0 and 1=1
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="faType" header="类型" width="150" render="10=固定资产,20=器具、工具,30=办公用品"/>
+        <column key="keepedDeptName" header="保管部门" width="150"/>
+        <column key="model" header="型号" width="150"/>
+        <column key="belongedStock" header="所属库存" width="150"/>
+        <column key="price" header="单价" width="150"/>
+        <column key="quantity" header="数量" width="150"/>
+        <column key="quantityAvl" header="可用数量" width="150"/>
+        <column key="vendor" header="生产厂商" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_stock_tx_list" key="id" tableName="库存明细表" className="com.radish.master.entity.fixedassets.FixedAssetsStkTx" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="operation" header="操作类型" allowSort="true" width="150" render="10=入库,20=领用,30=归还,40=维修,50=维修归还,60=调拨出库,70=调拨入库"/>
+        <column key="amount" header="发生额" width="150"/>
+        <column key="balance" header="余额" width="150"/>
+        <column key="price" header="入库价格" width="150"/>
+        <column key="remark" header="备注" width="150"/>
+        <column key="operator" header="操作员" width="150"/>
+        <column key="operateTime" header="操作时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_use_list" key="id" tableName="领用表" className="com.radish.master.entity.fixedassets.FixedAssetsUse" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="operator" header="领用人" width="150"/>
+        <column key="createDateTime" header="领用时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="model" header="型号" width="150"/>
+        <column key="quantity" header="数量" width="150"/>
+        <column key="quantityReturned" header="已归还" width="150"/>
+        <column key="quantityReturning" header="本次归还" width="150"/>
+        <column key="vendor" header="生产厂商" width="150"/>
+        <column key="status" header="状态" width="80" render="10=新建,20=审核通过,30=审核通过（需归还）,35=已部分归还,40=归还申请,50=已归还,60=审核不通过"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_channel_list" key="id" tableName="明细渠道表" className="com.radish.master.entity.fixedassets.FixedAssetsPurChannel" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="channelName" header="供应商" width="150"/>
+        <column key="price" header="渠道价格" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_allocate_list" key="id" tableName="调拨" className="com.radish.master.entity.fixedassets.FixedAssetsAllocate" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="operator" header="调拨人" width="150"/>
+        <column key="updateDateTime" header="申请时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="model" header="型号" width="150"/>
+        <column key="quantity" header="数量" width="150"/>
+        <column key="sourceStock" header="来源库" width="150"/>
+        <column key="targetStock" header="目标库" width="150"/>
+        <column key="status" header="状态" width="80" render="10=新建,20=来源审核,30=目标审核,40=副总审核,50=审核通过 ,60=审核不通过"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixedassets_pay_list" key="id" tableName="资产支付"  widthType="px" pageSize="20">
+        <sql>
+            <![CDATA[
+             select * ,
+             (case when payMoney=0 then 0 when (payMoney>0 and pMoney>payMoney) then 1 when payMoney>=pMoney then 2 Else 3 end ) payStatus
+              from (
+              select 
+              	a.id id,
+              	a.name,
+              	a.dept_name deptName,
+              	a.dept_id deptId,
+              	a.fa_type faType,
+              	a.status status,
+              	a.pur_no purNo,
+              	(select sum(ifnull(b.price,0)*ifnull(b.quantity,0)) pMoney 
+              		from tbl_fixedassets_pur_tx b where a.id = b.pur_id ) pMoney,
+              	(select ifnull(sum(ifnull(payMoney,0)) ,0) 
+              		from tbl_fixedAssetsPay b where a.id = b.purId and b.status='30') payMoney
+              from tbl_fixedassets_pur a where a.status in (40,50,60)  order by create_date_time desc) a where 1=1 
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="faType" header="类型" width="80" render="10=固定资产,20=器具、工具,30=办公用品"/>
+        <column key="purNo" header="编号" width="150"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="deptName" header="部门" allowSort="true" width="150"/>
+        <column key="status" header="状态" width="80" render="10=新建,11=总经理审批,12=采购员填写渠道,13=总经理审批渠道,14=上传合同,15=合同评审,21=项目经理审批,22=总经理审批,23=采购员编辑渠道,24=选择采购渠道,31=总经理审批,40=已生成采购单,50=部分入库,60=已全部入库"/>
+        <column key="pMoney" header="总金额" allowSort="true" width="150"/>
+        <column key="payMoney" header="已支付金额" allowSort="true" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderOperate"/>
+    </query>
+    
+    <query id="fixPay_list" key="id" tableName="支付明细列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT p.*,zm.accountName accountName
+			  FROM tbl_fixedAssetsPay p left join tbl_projectaccount zm on p.accountId = zm.id 
+			  WHERE  1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80" />
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="accountName" header="所属账目" classType="String" width="150"/>
+        <column key="payWay" header="支付方式" classType="String" allowSort="true" width="150" render="10=现金,20=转账,30=电汇"/>
+        <column key="skf" header="支付对象" classType="String" width="150"/>
+        <column key="payMoney" header="支付金额" classType="String" width="150"/>
+        <column key="createDate" header="创建时间" classType="String" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="status" header="支付审核状态" classType="String" width="150" render="10=新建,20=审核,30=审核通过,40=审核不通过"/>
+        <column key="id" header="管理" classType="String" width="150" fnRender="fnRenderGl"/>
+        
+    </query>
+    <query id="fixedassets_apply_txpay_list" key="id" tableName="请购表明细-支付页面" className="com.radish.master.entity.fixedassets.FixedAssetsPurTx" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="englishName" header="英文名称" width="150"/>
+        <column key="model" header="型号" width="150"/>
+        <column key="norm" header="规格" width="150"/>
+        <column key="unit" header="单位" width="150"/>
+        <column key="quantity" header="数量" width="150"/>
+        <column key="vendor" header="生产厂商" width="150"/>
+        <column key="price" header="单价" width="150"/>
+        <column key="channelName" header="供应商" width="150"/>
+    </query>
+    
+</queryContext>

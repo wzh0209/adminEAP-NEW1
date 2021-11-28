@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <context:annotation-config/>
+    <!-- 扫描注解配置包-->
+    <context:component-scan base-package="com.cnpc.framework.conf"/>
+
+    <!-- 引入属性文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties,classpath:setting.properties" ignore-unresolvable="true" order="1"/>
+
+    <!-- 自动扫描(自动注入) service层类 -->
+    <context:component-scan base-package="com.cnpc.**.service"/>
+    <context:component-scan base-package="com.radish.**.service"/>
+    <!-- 自动扫描（自动注入） dao层类 -->
+    <context:component-scan base-package="com.cnpc.**.dao"/>
+    <context:component-scan base-package="com.radish.**.dao"/>
+    <!-- 自动扫描（自动注入） aspectj -->
+    <context:component-scan base-package="com.cnpc.framework.aop"/>
+    <context:component-scan base-package="com.radish.framework.aop"/>
+    <!--数据库配置与事务-->
+    <import resource="classpath:spring-hibernate.xml"/>
+    <!--安全框架shiro配置-->
+    <import resource="classpath:spring-shiro.xml"/>
+    <!--缓存框架redis配置-->
+    <import resource="classpath:spring-redis.xml"/>
+    <!--工作流activiti配置-->
+    <import resource="classpath:spring-activiti.xml"/>
+    
+    <!-- ureport -->
+    <import resource="classpath:ureport-console-context.xml" />
+    
+    
+    <bean id="springUtil" class="com.radish.master.system.SpringUtil"/>
+    <bean id="baseActServer" class=" com.cnpc.framework.base.service.impl.BaseServiceImpl"></bean>
+    <bean id="purchaseActServer" class=" com.radish.master.service.impl.PurchaseServiceImpl"></bean>
+
+</beans>

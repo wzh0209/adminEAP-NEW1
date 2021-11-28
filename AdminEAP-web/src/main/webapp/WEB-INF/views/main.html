@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="钧润建设">
+  <meta name="description" content="钧润建设">
+  <title>钧润建设</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!--  -->
+  <!-- <link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico" media="screen"> -->
+  <link rel="shortcut icon" type="image/x-icon" href="${basePath}/resources/common/favicon.ico" media="screen" />
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="${basePath}/resources/adminlte/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome --> 
+  <link rel="stylesheet" href="${basePath}/resources/common/libs/font-awesome/css/font-awesome.min.css">
+
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+
+  <link rel="stylesheet" href="${basePath}/resources/common/css/base.css">
+ 
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="${basePath}/resources/common/libs/html5shiv/html5shiv.min.js"></script>
+  <script src="${basePath}/resources/common/libs/respond/respond.min.js"></script>
+  <![endif]-->
+    <!-- table and edit -->
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/datatables/select.bootstrap.min.css">
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/bootstrap-validator/dist/css/bootstrap-validator.css"/>
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/iCheck/all.css">
+    <!-- daterangepicker -->
+    <!--<link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/daterangepicker/daterangepicker.css">-->
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/select2/select2.min.css">
+    <!-- treeview -->
+    <link rel="stylesheet" href="${basePath}/resources/adminlte/plugins/bootstrap-treeview/bootstrap-treeview.min.css" />
+  <!-- Theme style -->
+  <link rel="stylesheet" href="${basePath}/resources/adminlte/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="${basePath}/resources/adminlte/dist/css/skins/_all-skins.css">
+  
+  <link rel="stylesheet" href="${basePath}/resources/cinder/common.css">
+  <link rel="stylesheet" href="${basePath}/resources/cinder/layout.css">
+
+</head>
+
+<style>
+        /*定义滚动条样式（高宽及背景）*/ 
+        .cdl ::-webkit-scrollbar { 
+            width: 6px;   /* 滚动条宽度， width：对应竖滚动条的宽度  height：对应横滚动条的高度*/
+            background: #007acc;
+        } 
+        /*定义滚动条轨道（凹槽）样式*/ 
+       .cdl ::-webkit-scrollbar-track { 
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);    /* 较少使用 */
+            border-radius: 3px; 
+        } 
+        /*定义滑块 样式*/ 
+        .cdl ::-webkit-scrollbar-thumb { 
+            border-radius: 3px; 
+            height: 100px;    /* 滚动条滑块长度 */
+            background-color: #ccc; 
+        }
+    </style>
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse fixed">
+<a name="main"></a>
+<div class="wrapper">
+
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="${basePath}/main" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels
+      <span class="logo-mini"><b>E</b>AP</span>
+       -->
+      <!-- logo for regular state and mobile devices
+      <span class="logo-lg"><b>Admin</b>EAP</span>
+       -->
+      <span class="logo-mini"><img src="${basePath}/resources/common/images/logo_red_02.png" width="40px" height="40px" alt="钧润建设"></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><img src="${basePath}/resources/common/images/logo_red_01.png" width="120px" height="40px" alt="钧润建设"></span>
+
+
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <!-- Navbar Right Menu -->
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="hidden-xs" id="dept_main"></span>
+            </a>
+          </li>
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="hidden-xs" id="job_main"></span>
+            </a>
+          </li>
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <!--  <img src="${basePath}/resources/adminlte/dist/img/user0-160x160.jpg" class="user-image" alt="User Image"> -->
+              <span class="hidden-xs">${user.name}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <!--
+              <li class="user-header">
+                <img src="${basePath}/resources/adminlte/dist/img/user0-160x160.jpg" class="img-circle" alt="User Image">
+
+                <p>
+                  ${user.name} - Web Developer 
+                  <small>Member since Nov. 2017</small>
+                </p>
+              </li>
+              -->
+              <!-- Menu Body -->
+              <!--  
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Followers</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Sales</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Friends</a>
+                  </div>
+                </div>
+              </li>
+              -->
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <!--  
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                </div>
+                -->
+                <div class="pull-left">
+                  <a href="#" onclick="changePWD();" class="btn btn-default btn-flat">修改密码</a>
+                </div>
+                <div class="pull-right">
+                  <a href="${basePath}/logout" id="login-logout-btn" class="btn btn-default btn-flat">注销</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+          </li>
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar cdl" >
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- search form 
+      <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form>
+      --> 
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu"  id="cdl"
+      style="overflow:auto;overflow-x: hidden;">
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" id="mainDiv">
+    
+  </div>
+  <!-- /.content-wrapper -->
+
+  <footer class="main-footer text-center">
+    <strong>Copyright &copy; 2017 <a href="#">zhouqingbo</a>.</strong> All rights
+    reserved.&nbsp;&nbsp;&nbsp;
+    <a href="http://www.miitbeian.gov.cn/">京ICP备16062522号</a>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Create the tabs -->
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <!-- Home tab content -->
+      <div class="tab-pane" id="control-sidebar-home-tab">
+        <h3 class="control-sidebar-heading">Recent Activity</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="javascript:void(0)">
+              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                <p>Will be 23 on April 24th</p>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">
+              <i class="menu-icon fa fa-user bg-yellow"></i>
+
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
+
+                <p>New phone +1(800)555-1234</p>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">
+              <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
+
+                <p>nora@example.com</p>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">
+              <i class="menu-icon fa fa-file-code-o bg-green"></i>
+
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
+
+                <p>Execution time 5 seconds</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+        <h3 class="control-sidebar-heading">Tasks Progress</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="javascript:void(0)">
+              <h4 class="control-sidebar-subheading">
+                Custom Template Design
+                <span class="label label-danger pull-right">70%</span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">
+              <h4 class="control-sidebar-subheading">
+                Update Resume
+                <span class="label label-success pull-right">95%</span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-success" style="width: 95%"></div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">
+              <h4 class="control-sidebar-subheading">
+                Laravel Integration
+                <span class="label label-warning pull-right">50%</span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)">
+              <h4 class="control-sidebar-subheading">
+                Back End Framework
+                <span class="label label-primary pull-right">68%</span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+      </div>
+      <!-- /.tab-pane -->
+
+      <!-- Settings tab content -->
+      <div class="tab-pane" id="control-sidebar-settings-tab">
+        <form method="post">
+          <h3 class="control-sidebar-heading">General Settings</h3>
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Report panel usage
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+
+            <p>
+              Some information about this general settings option
+            </p>
+          </div>
+          <!-- /.form-group -->
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Allow mail redirect
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+
+            <p>
+              Other sets of options are available
+            </p>
+          </div>
+          <!-- /.form-group -->
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Expose author name in posts
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+
+            <p>
+              Allow the user to show his name in blog posts
+            </p>
+          </div>
+          <!-- /.form-group -->
+
+          <h3 class="control-sidebar-heading">Chat Settings</h3>
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Show me as online
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+          </div>
+          <!-- /.form-group -->
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Turn off notifications
+              <input type="checkbox" class="pull-right">
+            </label>
+          </div>
+          <!-- /.form-group -->
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Delete chat history
+              <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
+            </label>
+          </div>
+          <!-- /.form-group -->
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+  </aside>
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div> 
+  
+</div>
+<!-- ./wrapper -->
+<script type="text/javascript">
+var basePath="${basePath}";//给外部js文件传递路径参数
+</script>
+<!-- jQuery 2.2.0 -->
+<script src="${basePath}/resources/adminlte/plugins/jQuery/jQuery-2.2.0.min.js"></script>
+<!--JSON2-->
+<script src="${basePath}/resources/common/json/json2.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="${basePath}/resources/adminlte/bootstrap/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="${basePath}/resources/adminlte/plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="${basePath}/resources/adminlte/dist/js/app.min.js"></script>
+
+<!-- dataTable -->
+<script src="${basePath}/resources/adminlte/plugins/datatables/jquery.dataTables.js"></script>
+<script src="${basePath}/resources/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="${basePath}/resources/common/js/dataTables.js"></script>
+<!-- form -->
+<script src="${basePath}/resources/adminlte/plugins/bootstrap-validator/dist/js/bootstrap-validator.js"></script>
+<script src="${basePath}/resources/adminlte/plugins/iCheck/icheck.min.js"></script>
+
+<!--daterangepicker-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="${basePath}/resources/adminlte/plugins/daterangepicker/daterangepicker.js"></script>-->
+
+<script src="${basePath}/resources/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+<script src="${basePath}/resources/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
+<!-- treeview -->
+<script src="${basePath}/resources/adminlte/plugins/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+        
+<!-- AdminLTE for demo purposes -->
+<script src="${basePath}/resources/adminlte/dist/js/demo.js"></script>
+<!--select2-->
+<script src="${basePath}/resources/adminlte/plugins/select2/select2.full.min.js"></script>
+
+<script type="text/javascript" src="${basePath}/resources/common/js/base.js"></script>
+<script type="text/javascript" src="${basePath}/resources/common/js/base-modal.js"></script>
+<script type="text/javascript" src="${basePath}/resources/common/js/base-form.js"></script>
+<script type="text/javascript" src="${basePath}/resources/common/js/base-datasource.js"></script>
+<script type="text/javascript" src="${basePath}/resources/common/js/base-org.js"></script>
+<!-- 加入页面的的脚本 -->
+<script>
+   //加载菜单
+   ajaxPost(basePath+"/function/rolefunc",null,function(data){
+      var $li,$menu_f_ul;
+      var $menu_s_th;//有第三级的二级菜单
+      var $menu_f_ul_th;//存在第三级菜单
+      $.each(data,function(index,item){
+          /* if(item.levelCode.length==6){ 
+              $li=$('<li class="treeview"></li>');
+              var $menu_f=$('<a href="#">\n'+
+                               '<i class="'+item.icon+'"></i> <span>'+item.name+'</span>\n'+
+                                ' <span class="pull-right-container">\n'+
+                               '<i class="fa fa-angle-left pull-right"></i>\n'+
+                            '</span></a>');
+              $li.append($menu_f);
+              $menu_f_ul=$('<ul class="treeview-menu"></ul>');
+              $li.append($menu_f_ul);
+              $("ul.sidebar-menu").append($li); 
+          } 
+          else if(item.levelCode.length==12){
+              $menu_s=$('<li><a href="#" data-url="${basePath}'+item.url+'"><i class="'+item.icon+'"></i>'+item.name+'</a></li>');
+              $menu_f_ul.append($menu_s); 
+          } */
+    	  if(item.rightID.length==6){ 
+              $li=$('<li class="treeview"></li>');
+              var $menu_f=$('<a href="#">\n'+
+                               '<i class="'+item.icon+'"></i> <span>'+item.name+'</span>\n'+
+                                ' <span class="pull-right-container">\n'+
+                               '<i class="fa fa-angle-left pull-right"></i>\n'+
+                            '</span></a>');
+              $li.append($menu_f);
+              $menu_f_ul=$('<ul class="treeview-menu"></ul>');
+              $li.append($menu_f_ul);
+              $("ul.sidebar-menu").append($li); 
+          } 
+          else if(item.rightID.length==12){
+        	  if(item.rightType == '1'){
+        		  $menu_s=$('<li><a href="#" data-url="${basePath}'+item.url+'"><i class="'+item.icon+'"></i>'+item.name+'</a></li>');
+                  $menu_f_ul.append($menu_s);
+        	  }else{
+        		  $menu_s_th=$('<li class="treeview"><a href="#"><i class="'+item.icon+'"></i>'+item.name+'<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a></li>');
+        	      $menu_f_ul_th=$('<ul class="treeview-menu"></ul>');
+        	      
+        	      $menu_s_th.append($menu_f_ul_th);
+        	      $menu_f_ul.append($menu_s_th);
+        	  }
+               
+          }
+          else if(item.rightID.length==18){
+        	  $menu_s=$('<li><a href="#" data-url="${basePath}'+item.url+'"><i class="'+item.icon+'"></i>'+item.name+'</a></li>');
+              $menu_f_ul_th.append($menu_s);
+          }
+      });
+      
+      /* //一级菜单
+      $li=$('<li class="treeview"></li>');
+      var $menu_f=$('<a href="#">\n'+
+                       '<i class="fa fa-share"></i> <span>多级菜单</span>\n'+
+                        ' <span class="pull-right-container">\n'+
+                       '<i class="fa fa-angle-left pull-right"></i>\n'+
+                    '</span></a>');
+      $li.append($menu_f);
+      $menu_f_ul=$('<ul class="treeview-menu"></ul>');
+      $li.append($menu_f_ul);
+      $("ul.sidebar-menu").append($li); 
+      //二级菜单
+      $menu_s=$('<li><a href="#" data-url="#"><i class="fa fa-circle-o"></i>第二级(可点)</a></li>');
+      $menu_f_ul.append($menu_s);
+      
+      $menu_s_th=$('<li class="treeview"><a href="#"><i class="fa fa-circle-o"></i>第二级(有三级)<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a></li>');
+      $menu_f_ul_th=$('<ul class="treeview-menu"></ul>');
+      
+      $menu_s_th.append($menu_f_ul_th);
+      $menu_f_ul.append($menu_s_th);
+      //三级菜单
+      $menu_s=$('<li><a href="#" data-url="#"><i class="fa fa-circle-o"></i>第三级</a></li>');
+      $menu_f_ul_th.append($menu_s);
+      $menu_s=$('<li><a href="#" data-url="#"><i class="fa fa-circle-o"></i>第三级</a></li>');
+      $menu_f_ul_th.append($menu_s);
+      $menu_s=$('<li><a href="#" data-url="#"><i class="fa fa-circle-o"></i>第三级</a></li>');
+      $menu_f_ul_th.append($menu_s); */
+   });  
+   
+   $(function(){
+	   var menuHeight = window.screen.availHeight-200;
+	   $("#cdl").css("height",menuHeight+"px") 
+       //首页默认加载
+       loadPage("${basePath}/homePage");
+       //loadPage("${basePath}/activiti/task/todo/list");
+       //loadPage("${basePath}/activiti/delegate/list");
+       //loadPage("${basePath}/markdown/preview?id=402880e958ecdff60158ed0c62ba0001")
+       $("a[data-url]").click(function(evt){
+           loadPage($(this).data("url"));
+           $("ul.treeview-menu li").removeClass("active");
+           $(this).parent().addClass("active");
+       });
+        //判断是否为办公室人员，如果是，就判断近期有无转正人员
+       ajaxPost(basePath+'/employeeQuery/getZzUser', {}, function(data) {
+           var str = "";
+           if(data.success){
+        	   str += data.message+"<a onclick='lookZz()' style='color:red'>待转正列表</a><br>";
+           }else{
+                console.log(data.message);
+           }
+           if(data.swxx){
+        	   str += data.swxx+"<a onclick='lookSw()' style='color:red'>个人收文查看</a>";
+           }
+           if(data.fasp){
+        	   str += data.fasp+"<a onclick='lookFa()' style='color:red'>指定人员方案审批</a>";
+           }
+           if(str){
+        	   modals.info(str);
+           }
+       }); 
+   });
+   function lookSw(){
+	   loadPage("/writings/swlook");
+	}
+	function lookZz(){
+		loadPage("/dzzuser/index");
+	} 
+	function lookFa(){
+		   loadPage("/fasp/ListOne");
+		}  
+   var dep = '${user.deptId?default(0)}';
+   var job = '${user.jobId?default(0)}';
+   
+   if(dep != '0'){
+       ajaxPost(basePath+'/org/get/'+dep, null, function(data) {
+           $('#dept_main').html(data.name);
+       });
+   }
+   if(job != '0'){
+       ajaxPost(basePath+'/dict/get/'+job, null, function(data) {
+           $('#job_main').html(data.name);
+       });
+   }   
+   
+   function changePWD(){
+       modals.openWin({
+           winId: "CHANGEPASSWORD",
+           width: 600,
+           title: '修改密码',
+           url: basePath + '/employeeQuery/tochangepwd'
+       });
+   }
+
+</script>
+</body>
+
+</html>

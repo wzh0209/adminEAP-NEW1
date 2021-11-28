@@ -1,0 +1,317 @@
+<section class="content-header">
+    <h1>
+        <span>项目管理</span>
+        <small>新增</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">项目管理</a></li>
+        <li class="active">新增项目</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <form id="project_form" name="project_form" class="form-horizontal">
+                    <input type="hidden" name="id" id="mainID">
+                    <div class="box-body">
+                        <div class="col-md-12">
+                        	<div class="form-group">
+                                <label class="col-sm-3 control-label">中标项目<span style="color:red">*</span></label>
+                                <div class="col-sm-6">
+									<select id="proid" class="form-control select2 "  style="width:100%" onchange="inputXm()">
+			                   			<option selected="selected" value="">选择一个项目</option>
+			                   		</select>                                
+		                   		</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">项目编号<span style="color:red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="projectCode" name="projectCode" placeholder="项目编号" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">项目名称<span style="color:red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="projectName" name="projectName" placeholder="项目名称" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">项目负责人<span style="color:red">*</span></label>
+			                    <div class="col-sm-5">
+			                        <input type="hidden" id="projectManager" name="projectManager">
+			                        <input type="text" class="form-control" id="projectManagerName" name="projectManagerName" readonly="readonly" placeholder="请选择负责人">
+			                    </div>
+			                    <div class="col-sm-2">
+			                        <button type="button" class="btn btn-primary" data-btn-type="selectManager">
+			                             <i class="fa fa-user"></i>&nbsp;选择
+			                        </button>
+			                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">备注</label>
+                                <div class="col-sm-6">
+                                    <textarea name="remark" id="remark" placeholder="请填写备注" class="form-control" rows="6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                    	<div class="col-md-6">
+                    		<div class="form-group">
+	                    		<label class="col-sm-5 control-label">建筑面积（㎡）</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="jzmj" name="jzmj"  placeholder="建筑面积">
+	                            </div>
+                            </div>
+                            <div class="form-group">
+	                    		<label class="col-sm-5 control-label" for="kgsj">开工时间</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="kgsj" name="kgsj" 
+	                            	 placeholder="开工时间"  data-flag="datepicker" data-format="yyyy-mm-dd" >
+	                            </div>
+                            </div>
+                            <div class="form-group">
+	                    		<label class="col-sm-5 control-label">层数</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="cs" name="cs"  placeholder="层数">
+	                            </div>
+                            </div>
+                            <div class="form-group">
+	                    		<label class="col-sm-5 control-label">工程地点</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="gcdd" name="gcdd"  placeholder="工程地点">
+	                            </div>
+                            </div>
+                    	</div>
+                    	<div class="col-md-6">
+                    		<div class="form-group">
+	                    		<label class="col-sm-3 control-label">结构形式</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="jzjg" name="jzjg"  placeholder="结构形式">
+	                            </div>
+                            </div>	
+                            <div class="form-group">
+	                    		<label class="col-sm-3 control-label" for="jgsj">竣工时间</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="jgsj" name="jgsj"  
+	                            	placeholder="竣工时间"  data-flag="datepicker" data-format="yyyy-mm-dd" >
+	                            </div>
+                            </div>	
+                            <div class="form-group">
+	                    		<label class="col-sm-3 control-label">工程总造价（万元）</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="zzj" name="zzj"  placeholder="工程总造价">
+	                            </div>
+                            </div>	
+                            <div class="form-group">
+	                    		<label class="col-sm-3 control-label">工程状态</label>
+	                            <div class="col-sm-6">
+	                            	<input type="text" class="form-control" id="gczt" name="gczt"  placeholder="工程状态">
+	                            </div>
+                            </div>	
+                    	</div>
+                    </div>
+                    <div class="box-footer text-center">
+                        <button type="button" class="btn btn-default" data-btn-type="prev">返回</button>
+                        <button type="submit" class="btn btn-primary ml10" data-btn-type="sub" id="editSub">保存并编辑子项</button>
+<!--                         <button type="submit" class="btn btn-primary ml10 dn" data-btn-type="next" id="uploadProFiles">上传项目文件</button>
+ -->                        <button type="submit" class="btn btn-success ml10" data-btn-type="save">保存并返回</button>
+                    </div>
+                </form>
+            </div>
+            <div class="box box-success dn" id="projectAddSub">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-files-o">子项列表</i>
+                    </span>
+                </div>
+                <form id="project-sub-form" name="project-sub-form" class="form-horizontal">
+                    <div class="dataTables_filter" style="text-align:center;margin-top:5px;">
+	                   <input type="hidden" name="projectID" id="subFormProjectID">
+	                   <input type="text" placeholder="请输入子项名称" title="子项名称" name="subName" class="form-control" id="subName" >
+	                   <div class="btn-group">
+	                       <button type="submit" class="btn btn-primary" data-btn-type="savetx">添加子项</button>
+	                   </div>
+	                </div>
+                </form>
+                <div class="dataTables_filter" id="searchDivSub" style="display:none;">
+                   <input type="search" name="projectID" id="projectID" class="form-control" operator="eq" style="display:none;" value="1">
+                </div>
+                <div class="box-body box-body-mobile">
+                    <!-- 内容 -->
+                    <table id="project_sub_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+var pros = '${projectOptions?default(0)}',pro=0;
+if(pros != 0){
+	pro = JSON.parse(pros);
+}
+    var labform, projectSubForm = $("#project-sub-form").form({baseEntity:false});
+    var id = "${id?default(0)}";
+    var projectSubTable;
+    var projectEditCtrl = {
+        initButtonEvent: function () {
+            $("button[data-btn-type='selectManager']").click(function () {
+                var ids = $("#projectManager").val() || 0;
+                modals.openWin({
+                    winId: 'userSelectWin',
+                    url: basePath + '/user/select/0/' + ids + '/setProjectManager',
+                    width: '850px',
+                    title: "选择项目负责人"
+                })
+            });
+            $("button[data-btn-type='prev']").click(function () {
+            	loadPage(basePath+"/project/list");
+            });
+        },
+        deleteDetail: function (rowId) {
+            modals.confirm("是否要删除该行数据？",function(){
+                ajaxPost(basePath+"/project/deletesub/"+rowId,null,function(data){
+                    if(data.success){
+                        projectSubTable.reloadData();
+                    }else{
+                        modals.error("删除失败！");
+                    }
+                });
+            })
+        }
+    }
+    $(function () {
+    	projectSubTable = new CommonTable("project_sub_table", "project_sub_list", "searchDivSub",{
+            "ordering" : false,
+            "lengthChange": false,
+            "displayLength": 20,
+            "scrollY": "300px",
+            "scrollCollapse": true
+        });
+    	
+        //初始化表单 
+        labform = $("#project_form").form({baseEntity:false});
+        //数据校验
+        $("#project_form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function () {
+            	var action = $(this).attr('$submitButton').attr('data-btn-type');
+                var formData = labform.getFormSimpleData();
+                ajaxPost(basePath + '/project/save', formData, function (data) {
+                    if (data.success) {
+	                   	switch (action) {
+	                    	case "next":
+	                    		if($('[role="row"]','#project_sub_table').length == 1){
+	                                modals.error("必须至少添加一个子项！");
+	                                return false;
+	                            }
+	                        	loadPage(basePath+"/project/uploadfile", undefined, data.data);
+	                            break;
+	                        case "save":
+	                            loadPage(basePath+"/project/list");
+	                            break;
+	                        case "sub":
+	                        	$('#editSub').hide();
+	                        	$('#uploadProFiles').show();
+	                        	$('#projectAddSub').show();
+	                        	$('#subFormProjectID').val(data.data.id);
+	                        	$('#mainID').val(data.data.id);
+	                        	$('#projectID').val(data.data.id);
+	                        	projectSubTable.reloadData();
+	                    }
+                    } else {
+                        modals.error(data.message);
+                    }
+                });
+            },
+            fields: {
+                "projectCode": {
+                    validators: {
+                        notEmpty: {message: '项目编号不能为空'}
+                    }
+                },
+                "projectName": {
+                    validators: {
+                        notEmpty: {message: '项目名称不能为空'}
+                    }
+                },
+                "projectManagerName": {
+                    validators: {
+                        notEmpty: {message: '项目负责人不能为空'}
+                    }
+                }
+            }
+        });
+        
+        $("#project-sub-form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function () {
+                var action = $(this).attr('$submitButton').attr('data-btn-type');
+                var formData = projectSubForm.getFormSimpleData();
+                switch (action) {
+                    case "savetx":
+                        ajaxPost(basePath + '/project/savesub', formData, function (data) {
+                            if (data.success) {
+                            	projectSubTable.table.page('first').draw(false);
+                            } else {
+                               modals.error("添加失败，请检查子项名称是否重复！");
+                            }
+                        });
+                        break;
+                }
+                
+            },
+            fields: {
+                "subName": {
+                    validators: {
+                        notEmpty: {message: '子项名称不能为空'}
+                    }
+                }
+            }
+        });
+        if(pro != 0){
+            for (var i = 0, len = pro.length; i < len; i++) {
+                var u = pro[i];
+                $('#proid').append("<option value='" + u.number + "' >" + u.projectName + "</option>");
+            }
+            $("#proid").select2();
+        }
+        
+        //编辑回填
+        //初始化控件
+        labform.initComponent();
+        projectEditCtrl.initButtonEvent();
+    });
+    
+    function setProjectManager(id, name){
+    	$("#projectManager").val(id);
+    	$("#projectManagerName").val(name);
+    }
+    
+    function fnRenderSub(value, type, rowObj){
+        var oper = "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='projectEditCtrl.deleteDetail(\"" + value + "\")'>删除</a>";
+        return oper;
+    }
+
+    function inputXm(){
+		var xm = $("#proid option:selected").val();
+		if(xm){
+			$("#projectName").val($("#proid option:selected").html());
+	    	$("#projectCode").val($("#proid option:selected").val());
+		}
+    }
+</script>

@@ -1,0 +1,120 @@
+
+<link rel="stylesheet" href="${basePath}/resources/common/libs/fileinput/css/fileinput.min.css">
+<script src="${basePath}/resources/common/libs/fileinput/js/fileinput.js"></script>
+<script src="${basePath}/resources/common/libs/fileinput/js/locales/zh.js"></script>
+<!--BaseFile组件-->
+<script src="${basePath}/resources/common/js/base-file.js"></script>
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="dataTables_filter" id="searchDiv1" style="text-align:center;height:1px;">
+                    <input type="search" id="pid" name="zf.id" class="form-control dn" operator="eq" style="display:none;" value="1">
+                    <input  id="sl" name="sl" class="form-control" placeholder="请输附件数量">
+                    <div class="btn-group">
+                    	<button type="button" class="btn btn-primary" data-btn-type="addFjsl">变更附件数量</button>
+                        <button type="button" class="btn btn-primary dn" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default dn" data-btn-type="reset">重置</button>
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="attendance_import_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+var payid = '${payid?default(0)}'
+	var zdr = '${zdr}'
+    var attendanceImportTable;
+    $(function () {
+        if(payid!=0){
+			$("#pid").val(payid);
+        }
+    	budgetImportTable = new CommonTable("attendance_import_table", "projectPay_DetZf", "searchDiv1");
+    	
+       $('button[data-btn-type]').click(function() {
+           var actions = $(this).attr('data-btn-type');
+           var rowId=budgetImportTable.getSelectedRowId();
+           switch (actions) {
+           case 'addFjsl':
+        	   
+	          	 if(!rowId){
+	          		 modals.info('请选择要变更附件数量的支付单');
+	              	 return;
+	          	 }
+	          	 var fjsl = $("#sl").val();
+	          	 if(!fjsl){
+	          		modals.info('请输入附件数量');
+	              	 return;
+		         }
+	          	 if(isNaN(fjsl)){
+	          		modals.info('请输入正确的附件数量');
+	              	 return;
+		          }
+	
+	          	 ajaxPost(basePath+"/projectpay/EditFjsl",{fjsl:fjsl,zfid:rowId},function(data){
+	                   if(data.success){
+	                  	 $("#sl").val("");
+	                  	 budgetImportTable.reloadRowData();
+	                   }else{
+	                       modals.error("系统繁忙，请稍后重试");
+	                   }
+	               });
+               break;             
+           }
+
+       });
+    });
+    function fnRenderZf(value, type, rowObj){
+    	var oper ="";
+    	if(rowObj.status=="待支付"){
+    		oper +="<a href='javascript:void(0)' onclick='Zf(\"" + value + "\")'>支付审批</a>";
+    	}
+    	if(rowObj.status=="完成"){
+    		oper +="<a href='javascript:void(0)' onclick='Dy(\"" + value + "\")'>打印支付单</a>";
+    		if(rowObj.isrz!="20"&&rowObj.fk!=0){
+    			oper +="&nbsp;&nbsp;<a href='javascript:void(0)' onclick='doJz(\"" + value + "\")' style='color:red'>记账</a>";
+            }
+    	}
+    	if(rowObj.status=="驳回(待支付)"){
+    		oper +="<a href='javascript:void(0)' onclick='Yy(\"" + rowObj.bhdesc.replace(/[\r\n]/g,'') + "\")'>驳回原因</a>&nbsp;&nbsp;<a href='javascript:void(0)' onclick='Zf(\"" + value + "\")'>支付审批</a>";
+        }
+        
+        return oper;
+    }
+    function Zf(id){
+    	modals.confirm("确定要提交支付审批？",function(){
+            ajaxPost(basePath + '/projectpay/startZf', {id:id}, function (data) {
+                if (data.success) {
+                	budgetImportTable.reloadData();
+                    modals.correct("流程已启动，请及时处理");
+                } else {
+                    modals.error(data.message);
+                }
+            });
+        });
+    }
+    function Dy(id){
+    	var url = basePath+"/ureport/preview?_u=file:projectPayDet.ureport.xml&_t=1,5&id="+id+"&zdr="+zdr;
+	 	window.open(url);
+    }
+    function Yy(value){
+    	modals.info(value);
+    }
+
+    function doJz(id){
+    	modals.confirm("请确认是否记账？",function(){
+            ajaxPost(basePath+"/projectpay/doJz?id="+id,null,function(data){
+            	if(data.success){
+            		modals.info("成功记账");
+            		budgetImportTable.reloadData();
+            	}
+            });
+        })
+    }
+</script>

@@ -1,0 +1,296 @@
+
+<link rel="stylesheet" href="${basePath}/resources/common/libs/fileinput/css/fileinput.min.css">
+<script src="${basePath}/resources/common/libs/fileinput/js/fileinput.js"></script>
+<script src="${basePath}/resources/common/libs/fileinput/js/locales/zh.js"></script>
+<!--BaseFile组件-->
+<script src="${basePath}/resources/common/js/base-file.js"></script>
+<section class="content-header">
+    <h1>
+        <span>预算表</span>
+        <small>导入</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">预算管理</a></li>
+        <li class="active">导入预算表</li>
+    </ol>
+</section>
+
+<section class="content" id="projectaddstep2">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-edit">导入预算表</i>
+                    </span>
+                </div>
+                <form id="import_form" name="project_form" class="form-horizontal">
+                    <input type="hidden" name="projectName" id="projectName">
+                    <input type="hidden" name="projectSubName" id="projectSubName">
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择项目<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <select id="projectID" class="form-control select2" name="projectID">
+                                        <option selected="selected" value="">选择一个项目</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择子项<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <select id="projectSubID" class="form-control select2" name="projectSubID">
+                                        <option selected="selected" value="">选择一个项目子项</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">选择预算类型<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <select id="budgetType" class="form-control select2" name="budgetType">
+                                        <option selected="selected" value="">选择一种类型</option>
+                                        <option value="1">建筑与装饰工程</option>
+                                        <option value="2">安装工程</option>
+                                        <option value="3">市政工程</option>
+                                        <option value="4">园林绿化工程</option>
+                                        <option value="5">房屋修缮工程</option>
+                                        <option value="6">装配式工程</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">预算名称<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" name="budgetName" id="budgetName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">预算编号（生成）<span style="color:red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" name="budgetNo" id="budgetNo" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">预算文件<span style="color:red">*</span></label>
+                                <div class="col-sm-6">
+                                    <input type="file" name="budgetfileupload" id="budgetfileupload">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer text-center">
+                        <button type="button" class="btn btn-default" data-btn-type="reset">清空</button>
+                    </div>
+                </form>
+            </div>
+            <div class="box">
+                <div class="dataTables_filter" id="searchDiv" style="text-align:center;height:1px;">
+                    <input type="search" title="定额编号" name="isGroup" class="form-control dn" id="isGroup" operator="eq" value="0" style="display:none;">
+                    <input type="search" title="批次" name="budgetNo" class="form-control dn" id="budgetNo" operator="eq" style="display:none;" value="1">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dn" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default dn" data-btn-type="reset">重置</button>
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="budget_import_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var importform,budgetImportTable;
+    var projectOptions = '${projectOptions?default(0)}',options=0;
+    if(projectOptions != 0){
+    	options = JSON.parse(projectOptions);
+    }
+    $(function () {
+    	budgetImportTable = new CommonTable("budget_import_table", "budget_import_list", "searchDiv", {
+    	    "paging" : false,    		
+            "drawCallback": function ( settings ) {
+                var api = this.api();
+                var rows = api.rows( {page:'current'} ).nodes();
+                var last=null;
+     
+                api.column(12, {page:'current'} ).data().each( function ( group, i ) {
+                    if ( last !== group ) {
+                    	var ret = group;
+                    	var groupRowID = $(rows).eq(i).attr("id");
+                    	ajaxPost(basePath + "/budgetimport/getgroup/"+groupRowID, null, function (data) {
+                            ret=data.data;
+                        });
+                        $(rows).eq( i ).before(
+                            '<tr class="group" id="'+ret.id+'" style="background-color:#3c8dbc;" data-container-id="'+group+'" onclick="toggleContainer(this);return false;">'+
+                            '<td class="text-center" colspan="3"><font color="#fff">'+ret.quotaName+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.units+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.quantities+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.price+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.unitPrice+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.artificiality+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.materiels+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.mech+'</font></td>'+
+                            '<td class="text-center"><font color="#fff">'+ret.materielsUnitPrice+'</font></td>'+
+                            '</tr>'
+                        );
+     
+                        last = group;
+                    }
+                    $(rows).eq( i ).attr('data-group' ,''+group+'');
+                } );
+            },
+            "dom": '<"top"i>rt<"bottom"flp><"clear">'
+    	});
+    	
+        //初始化表单 
+        importform = $("#import_form").form({baseEntity:false});
+        //数据校验
+        $("#import_form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function () {
+                //nothing
+            },
+            fields: {
+                "projectID": {
+                    validators: {
+                        notEmpty: {message: '所属项目不能为空'}
+                    }
+                },
+                "budgetType": {
+                    validators: {
+                        notEmpty: {message: '预算类型不能为空'}
+                    }
+                },
+                "projectSubID": {
+                    validators: {
+                        notEmpty: {message: '项目子项不能为空'}
+                    }
+                },
+                "budgetName": {
+                    validators: {
+                        notEmpty: {message: '预算名称不能为空'},
+                        remote:{
+                            url:basePath+"/budgetimport/checkUnique",
+                            data: function(validator) {
+                                return {
+                                    projectID:$('#projectID').val(),
+                                    budgetName:$('#budgetName').val()
+                                };
+                            },
+                            message:'该名称已被使用'
+                        }
+                    }
+                }
+            }
+        });
+        //初始化控件
+        importform.initComponent();
+        
+        if(options != 0){
+            for (var i = 0, len = options.length; i < len; i++) {
+                var option = options[i];
+                $('#projectID').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $(".select2").select2();
+            $("#projectID").bind("change", function () {
+                var value = $(this).val();
+                if (value === "") {
+                    return false;
+                }
+                
+                var name = "";
+                if ($("#projectID").prop('selectedIndex') > 0) {
+                    name = $("#projectID").find("option:selected").text();
+                }
+                $('#projectName').val(name);
+                
+                ajaxPost(basePath+"/projectvolume/getprojectsub",{projectID:value},function(data){
+                    var subOptions = data.message;
+                    sOptions = JSON.parse(subOptions);
+                    $('#projectSubID').empty();
+                    $('#projectSubID').append('<option selected="selected" value="">选择一个项目子项</option>');
+                    for (var i = 0, len = sOptions.length; i < len; i++) {
+                        var sOption = sOptions[i];
+                        $('#projectSubID').append("<option value=\"" + sOption.value + "\">" + sOption.data + "</option>");
+                    }
+                    $('#projectSubID').select2();
+                    $('#projectSubID').unbind("change.ProjectSub");
+                    $('#projectSubID').bind("change.ProjectSub", function(){
+                        subid = $(this).val();
+                        if (subid === "") {
+                            return false;
+                        }
+                        
+                        var subName = "";
+                        if ($("#projectSubID").prop('selectedIndex') > 0) {
+                        	subName = $("#projectSubID").find("option:selected").text();
+                        }
+                        $('#projectSubName').val(subName);
+                    });
+                });
+            });
+        }
+        
+        $("#budgetName").on("focusout", function(){
+        	if($(this).val() == '' || $(this).val() == null || $(this).val() == undefined){
+        		return false;
+        	}
+        	ajaxPost(basePath + "/budgetimport/genno/"+$(this).val(), null, function (data) {
+                $('#budgetNo').val(data.message);
+            });
+        });
+        
+        $('#budgetfileupload').on('click', function(e){
+        	$("#import_form").data("bootstrapValidator").validate();
+        	if(!$("#import_form").data("bootstrapValidator").isValid()){
+        		e.preventDefault();
+        	}
+        });
+        
+        $("button[data-btn-type='reset']").click(function () {
+            loadPage(basePath+"/budgetimport/toimport");
+        });
+    });
+    
+    $.fn.fileinputLocales['zh'].msgValidationError = "请选择xls或xlsx格式的文件";
+    $.fn.fileinputLocales['zh'].uploadLabel = "导入";
+    
+    $("#budgetfileupload").fileinput({
+    	language: 'zh',
+    	uploadUrl: basePath + "/budgetimport/import",
+    	uploadExtraData : getFormData,
+    	allowedFileExtensions : ['xls', 'xlsx'],
+    	showPreview : false
+    }).on("fileuploaded", function(event, data, previewId, index){
+    	$('#budgetNo',$('#searchDiv')).val(data.extra.budgetNo);
+    	budgetImportTable.reloadData();
+    	$('#projectID').attr("disabled","disabled");
+    	$('#budgetName').attr("disabled","disabled");
+    	setTimeout('disableFileInput()',500);
+    });
+    
+    function getFormData(){
+    	return importform.getFormSimpleData();
+    }
+    
+    function disableFileInput(){
+    	$("#budgetfileupload").fileinput('disable')
+    }
+    
+    function toggleContainer(that){
+        var selector = $(that).attr('data-container-id');
+        $('[data-group="'+selector+'"]', '#budget_import_table').toggle(100);
+    }
+</script>

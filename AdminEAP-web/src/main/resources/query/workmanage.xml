@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+    <query id="member_project_list" key="id" tableName="项目人员管理" widthType="px" pageSize="20">
+        <sql>
+            <![CDATA[
+              SELECT p.id id,project_code projectCode, project_name projectName, name projectManager, status 
+              FROM tbl_project p, tbl_user u
+              WHERE p.project_manager = u.id AND 1=1
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="projectCode" header="项目编号" allowSort="true" width="150"/>
+        <column key="projectName" header="项目名称" classType="String" allowSort="true" width="150"/>
+        <column key="projectManager" header="项目负责人" classType="String" allowSort="true" width="150"/>
+        <column key="id" header="操作" width="100" fnRender="fnRenderMember"/>
+    </query>
+    
+    <query id="member_tx_list" key="id" tableName="班组人员" className="com.radish.master.entity.project.UserTeam" widthType="px" pageSize="200" order="teamCode asc">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="userName" header="用户名" classType="String" width="150"/>
+        <column key="teamName" header="班组名称" classType="String" width="150"/>
+        <column key="teamCode" header="班组编号" classType="String" width="150"/>
+        <column key="projectName" header="项目名称" classType="String" width="150"/>
+        <column key="id" header="操作" width="100" fnRender="fnMemberDelete"/>
+    </query>
+    
+    <query id="member_tx_detail" key="id" tableName="班组人员" className="com.radish.master.entity.project.UserTeam" widthType="px" pageSize="200" order="teamCode asc">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="userName" header="用户名" classType="String" width="150"/>
+        <column key="teamName" header="班组名称" classType="String" width="150"/>
+        <column key="teamCode" header="班组编号" classType="String" width="150"/>
+        <column key="projectName" header="项目名称" classType="String" width="150"/>
+    </query>
+    
+    <query id="attendance_list" key="id" tableName="考勤记录" className="com.radish.master.entity.wechat.Attendance" widthType="px" pageSize="20">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="month" header="月份" classType="String" />
+        <column key="name" header="姓名" classType="String" />
+        <column key="suppose" header="应打卡天数" classType="String" />
+        <column key="normal" header="正常打卡天数" classType="String" />
+        <column key="exception" header="异常打卡天数" classType="String" />
+        <column key="early" header="早退" classType="String" />
+        <column key="late" header="迟到" classType="String" />
+        <column key="completion" header="矿工" classType="String" />
+        <column key="total" header="合计" classType="String" />
+    </query>
+    
+    <query id="compactMb_List" key="id" tableName="劳务、劳动合同模板" className="com.radish.master.entity.files.CompactMb" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="文件名" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="filetype" header="文件类型" classType="String" width="150" render="10=劳务合同,20=劳动合同"/>
+        <column key="create_name" header="创建人" classType="String" width="150"/>
+        <column key="id" header="附件" width="100" fnRender="fnFj"/>
+    </query>
+    
+    <query id="writingsAdd_List" key="id" tableName="收发文管理" className="com.radish.master.entity.files.Writings" widthType="px" pageSize="200" order="create_time desc">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="名称" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="create_time" header="创建时间" classType="java.util.Date" operator="between" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="issend" header="发送状态" classType="String" width="150" render="1=已发送,0=未发送"/>
+        <column key="id" header="附件" width="100" fnRender="fnFj"/>
+        <column key="id" header="操作" width="100" fnRender="fnCz"/>
+    </query>
+    <query id="writingsAdd_ChooseDept" key="id" tableName="收发文管理-选择部门" widthType="px" allowPaging="true">
+        <sql>
+            <![CDATA[
+              SELECT bm.id id ,bm.name name ,bm.pid pid ,bm.pname pname 
+              FROM v_depts bm 
+              WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="name" header="部门名称" allowSort="true" width="150"/>
+        <column key="pname" header="上级部门" classType="String" allowSort="true" width="150"/>
+    </query>
+    <query id="writingsAdd_ListLook" key="id" tableName="收文查看" widthType="px" allowPaging="true" order="create_time desc">
+        <sql>
+            <![CDATA[
+              SELECT w.name name,w.number number,w.create_name,w.create_time create_time, l.id id ,l.writingid writingid ,l.lookid lookid ,
+              l.islook islook 
+              FROM tbl_writingslook l,tbl_writings w 
+              WHERE l.writingid = w.id and  1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="名称" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="create_time" header="创建时间" operator="between" width="150" />
+        <column key="islook" header="查看状态" classType="String" width="150" render="1=已查看,0=未查看"/>
+        <column key="writingid" header="操作" width="100" fnRender="fnCz"/>
+    </query>
+    <query id="writingsAdd_ListLookers" key="id" tableName="收文查看人员列表" widthType="px" allowPaging="true">
+        <sql>
+            <![CDATA[
+              SELECT l.lookname lookname ,l.deptName deptName ,l.createDate createDate , w.id id 
+              FROM tbl_writingslook l,tbl_writings w 
+              WHERE l.writingid = w.id and  1=1 and l.islook='1' 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="lookname" header="姓名" classType="String" width="150"/>
+        <column key="deptName" header="所在部门" classType="String" width="150"/>
+        <column key="createDate" header="最新查看时间" operator="between" width="150" />
+    </query>
+    <query id="financeall_List" key="id" tableName="财务文件列表" className="com.radish.master.entity.files.FinanceAllWord" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="文件名" classType="String" width="150"/>
+        <column key="filetype" header="文件类型" classType="String" width="150" render="10=通用文件,20=财务文件"/>
+        <column key="create_name" header="创建人" classType="String" width="150"/>
+        <column key="id" header="附件" width="100" fnRender="fnFj"/>
+    </query>
+    <query id="askleave_gr" key="id" tableName="个人请假列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT jk.id id,jk.startdate startdate,jk.enddate enddate,jk.status status,jk.alldays alldays ,jk.askid askid,jk.bmyj bmyj ,jk.bossyj bossyj 
+			  ,jk.bgsyj bgsyj ,jk.dept dept,jk.askame askame 
+			  FROM tbl_askleave jk 
+			  WHERE 1=1  
+			  order by jk.startdate desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="dept" header="部门" classType="String" width="150"/>
+        <column key="askame" header="姓名" classType="String" width="150"/>
+        <column key="startdate" header="开始日期" classType="String" width="150" allowSort="true"/>
+        <column key="enddate" header="结束日期" classType="String" width="150"/>
+        <column key="alldays" header="总天数" classType="String" width="150"/>
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=部门审核,30=部门驳回,40=办公室审核,50=办公室驳回,60=领导审核,70=领导驳回,80=完成"/>
+    	<column key="id" header="操作" classType="String" width="150"  fnRender="fnRenderXQ"/>
+    </query>
+    <query id="askleave_bm" key="id" tableName="个人请假部门审核列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT jk.id id,jk.startdate startdate,jk.enddate enddate,jk.status status,jk.alldays alldays ,jk.askid askid,jk.bmyj bmyj ,jk.bossyj bossyj 
+			  ,jk.bgsyj bgsyj ,jk.dept dept,jk.askame askame ,u.auditdept auditdept
+			  FROM tbl_askleave jk ,tbl_user u 
+			  WHERE 1=1  and jk.status='20' and u.id = jk.askid
+			  order by jk.startdate desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="dept" header="部门" classType="String" width="150"/>
+        <column key="askame" header="姓名" classType="String" width="150"/>
+        <column key="startdate" header="开始日期" classType="String" width="150" allowSort="true"/>
+        <column key="enddate" header="结束日期" classType="String" width="150"/>
+        <column key="alldays" header="总天数" classType="String" width="150"/>
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=部门审核,30=部门驳回,40=办公室审核,50=办公室驳回,60=领导审核,70=领导驳回,80=完成"/>
+    	<column key="id" header="操作" classType="String" width="150"  fnRender="fnRenderXQ"/>
+    </query>
+    <query id="carList" key="id" tableName="车辆管理列表" className="com.radish.master.entity.workmanage.Car" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="number" header="车牌号" classType="String" width="150"/>
+        <column key="clxh" header="车辆型号" classType="String" width="150" />
+        <column key="bxtime" header="保险日期"  width="150"  dateFormat="yyyy-mm-dd"/>
+        <column key="id" header="车辆附件" width="100" fnRender="fnFj"/>
+        <column key="id" header="使用记录" width="100" fnRender="fnJl"/>
+    </query>
+    <query id="carList_use" key="id" tableName="车辆申请列表" className="com.radish.master.entity.workmanage.Caruse" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="deptname" header="部门" classType="String" width="150"/>
+        <column key="driver" header="驾驶人" classType="String" width="150"/>
+        <column key="number" header="车牌号" classType="String" width="150"/>
+        <column key="cctime" header="出车时间" width="150"  allowSort="true"  dateFormat="yyyy-mm-dd"/>
+         <column key="status" header="状态" classType="String" width="150" render="10=新建,20=用车审核,30=同意用车,40=不同意用车"/>
+        <column key="id" header="管理" width="100" fnRender="fnFj"/>
+    </query>
+    <query id="carList_usesp" key="id" tableName="车辆审批列表" className="com.radish.master.entity.workmanage.Caruse" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="deptname" header="部门" classType="String" width="150"/>
+        <column key="driver" header="驾驶人" classType="String" width="150"/>
+        <column key="number" header="车牌号" classType="String" width="150"/>
+        <column key="cctime" header="出车时间" width="150"  allowSort="true"  dateFormat="yyyy-mm-dd"/>
+         <column key="status" header="状态" classType="String" width="150" render="10=新建,20=用车审核,30=同意用车,40=不同意用车"/>
+        <column key="id" header="管理" width="100" fnRender="fnFj"/>
+    </query>
+    
+    <query id="carList_useMx" key="id" tableName="车辆使用明细" className="com.radish.master.entity.workmanage.Caruse" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="deptname" header="部门" classType="String" width="150"/>
+        <column key="driver" header="驾驶人" classType="String" width="150"/>
+        <column key="cctime" header="出车时间" width="150"  allowSort="true"  dateFormat="yyyy-mm-dd"/>
+    </query>
+    
+    <query id="sealList" key="id" tableName="印章管理列表" className="com.radish.master.entity.workmanage.Seal" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="印章名称" classType="String" width="150"/>
+        <column key="descs" header="备注" classType="String" width="150" />
+        <column key="id" header="管理" width="100" fnRender="fnFj"/>
+    </query>
+    <query id="sealList_use" key="id" tableName="印章申请列表" className="com.radish.master.entity.workmanage.Sealuse" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="sqtime" header="申请时间" width="150"  allowSort="true"  dateFormat="yyyy-mm-dd"/>
+        <column key="gsmc" header="公司及项目名称" classType="String" width="150"/>
+         <column key="name" header="用章名称" classType="String" width="150"/>
+        <column key="deptname" header="用章部门" classType="String" width="150"/>
+        <column key="sl" header="数量" classType="String" width="150"/>
+         <column key="status" header="状态" classType="String" width="150" render="10=新建,20=部门审核,30=部门驳回,40=办公室审核,50=办公室驳回,70=领导审核,80=领导驳回,60=完成"/>
+        <column key="id" header="管理" width="100" fnRender="fnFj"/>
+    </query>
+    <query id="sealList_bmsp" key="id" tableName="印章部门审批列表" className="com.radish.master.entity.workmanage.Sealuse" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="sqtime" header="申请时间" width="150"  allowSort="true"  dateFormat="yyyy-mm-dd"/>
+        <column key="sqr" header="申请人" classType="String" width="150"/>
+        <column key="gsmc" header="公司及项目名称" classType="String" width="150"/>
+         <column key="name" header="用章名称" classType="String" width="150"/>
+        <column key="deptname" header="用章部门" classType="String" width="150"/>
+        <column key="sl" header="数量" classType="String" width="150"/>
+        <column key="id" header="管理" width="100" fnRender="fnFj"/>
+    </query>
+</queryContext>

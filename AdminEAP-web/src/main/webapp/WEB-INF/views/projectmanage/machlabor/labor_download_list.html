@@ -1,0 +1,74 @@
+<section class="content-header">
+    <h1>
+        机械合同下载
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">劳务管理</a></li>
+        <li class="active">机械合同下载</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv" style="display: none">
+                    <select id="projectID" class="form-control select2" name="l.project_id" style="width:200px;" operator="eq">
+                    	<option selected="selected" value="">选择一个项目</option>
+                    </select>
+                   <input type="search" placeholder="请输入责任人" title="责任人" name="l.construction_manager" class="form-control" id="charge_name" operator="like" likeOption="true">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="labor_download_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+           </div>
+         </div>
+         
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var laborDownloadTable, winId = "laborWin";
+    var projectOptions = '${projectOptions?default(0)}',options=0;
+    if(projectOptions != 0){
+        options = JSON.parse(projectOptions);
+    }
+    
+    $(function (){
+        laborDownloadTable = new CommonTable("labor_download_table", "labor_download_list_mach", "searchDiv");
+        
+        if(options != 0){
+            for (var i = 0, len = options.length; i < len; i++) {
+                var option = options[i];
+                $('#projectID').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $(".select2").select2();
+        }
+    });
+    function fnRenderDetail(value) {
+        if(value){
+            return "<a href='javascript:void(0)' onclick='showDetail(\"" + value + "\")'>查看合同</a>";
+        }else{
+            return "";
+        }
+        
+    }
+    
+    function showDetail(fileId) {
+        modals.openWin({
+            winId: "fileWin",
+            width: "900px",
+            url: basePath + "/labor/labordetailfile?id=" + fileId ,
+            title: "查看附件"
+        });
+    }
+</script>

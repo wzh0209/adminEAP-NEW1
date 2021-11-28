@@ -1,0 +1,231 @@
+<script src="${basePath}/resources/common/js/calculate.js"></script>
+<link rel="stylesheet" href="${basePath}/resources/common/libs/fileinput/css/fileinput.min.css">
+<script src="${basePath}/resources/common/libs/fileinput/js/fileinput.js"></script>
+<script src="${basePath}/resources/common/libs/fileinput/js/locales/zh.js"></script>
+<!--BaseFile组件-->
+<script src="${basePath}/resources/common/js/base-file.js"></script>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-files-o">班组工资单</i>
+                    </span>
+                </div>
+                <form id="salary-detail-form" name="salary-detail-form" class="form-horizontal">
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">所属项目<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="projectName" name="projectName" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">班组名称<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="teamName" name="teamName" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">可付总额</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="total" name="total" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">申请总额</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="applySum" name="applySum" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" >开始时间<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd" name="startTime" id="startTime"
+                                        placeholder="起始时间" autocomplete="off" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                             <label class="col-sm-4 control-label" >结束时间<span style="color:red">*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd" name="endTime" id="endTime"
+                                        placeholder="结束时间" autocomplete="off" readonly="readonly">
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                                <label class="col-sm-3 control-label">备注</label>
+                                <div class="col-sm-6">
+                                    <textarea class="form-control" id="note" name="note" placeholder="备注" rows="6"  readonly="readonly"></textarea>
+                                </div>
+                            </div>
+                    <input type="hidden" name="fileId" id="fileId">
+						<div class="form-group" align="center" id="wjscid">
+							<div class="btn btn-default btn-file" id="uploadFile">
+								<i class="fa fa-paperclip"></i> 上传附件(Max. 10MB--上传完成请保存)
+							</div>
+						</div>
+						<div class="form-group" id="file_container">
+							<input type="file" name="file"  id="attachment">
+						</div>
+                </form>
+            </div>
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-files-o">工资单明细</i>
+                         <span id="gcls"></span>
+                    </span>
+                </div>
+                <div class="dataTables_filter" id="searchDivDetail" style="display:none;">
+                   <input type="search" name="salaryID" id="salaryID" class="form-control" operator="eq" style="display:none;">
+                </div>
+                <div class="box-body box-body-mobile">
+                    <!-- 内容 -->
+                    <table id="salary_detail_table" class="table table-bordered table-striped table-hover">
+                        <tfoot>
+                            <tr>
+                                <th colspan="11" style="text-align:right">合计:</th>
+                                <th class="text-left">0</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+$("#wjscid").css("display","none")
+$("#attachment").css("display","none")
+    var form, salaryDetailTable;
+    var id = "${id}";
+    $('#salaryID',$('#searchDivDetail')).val(id);
+    $(function () {
+    	salaryDetailTable = new CommonTable("salary_detail_table", "team_salary_detail_overview", "searchDivDetail", {
+            "footerCallback": function ( row, data, start, end, display ) {
+                var api = this.api(), data;
+                // Remove the formatting to get integer data for summation
+                var intVal = function ( i ) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '')*1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+     
+                // Total over this page
+                unitTotal = api
+                    .column( 11, { page: 'current'} )
+                    .data()
+                    .reduce( function (a, b) {
+                        return accAddition(intVal(a), intVal(b));
+                    }, 0 );
+                // Update footer
+                $( api.column( 11 ).footer() ).html(
+                    '￥'+unitTotal
+                );
+            }
+    	});
+        //初始化表单 
+        form = $("#salary-detail-form").form({baseEntity:false});
+        //初始化控件
+        form.initComponent();
+        
+        //编辑回填
+        if(id!="0"){
+            ajaxPost(basePath+"/project/point/salary/get",{id:id},function(data){
+                form.initFormData(data.data);
+                $("#fileId").val(data.message);  
+            })
+            ajaxPost(basePath+"/project/team/salary/getGcls",{id:id},function(data){
+                if(data.success==true){
+					if(data.data.length>0){
+						var sj = data.data
+						var gcs = "";
+						for(var i = 0;i<sj.length;i++){
+							gcs += "&nbsp;<a onclick=lookxq(\"" + sj[i].id + "\",\""+sj[i].lx+"\")>"+sj[i].name+"</a>"
+						}
+					}
+					$("#gcls").html(gcs);
+                 }
+            })
+        }
+        
+    });
+    function lookxq(id,lx){
+		if(lx=="10"){
+			 modals.openWin({
+	             winId:"gcl",
+	             title:'工程量上报详情',
+	             width:'1200px',
+	             url:basePath+"/projectvolume/detailouter/"+id            
+	        });
+		}else if(lx=="30"){
+			 modals.openWin({
+	             winId:"gcl",
+	             title:'上报详情',
+	             width:'1200px',
+	             url:basePath+"/measurevolume/detailouter/"+id            
+	        });
+		}
+    }
+    var fileinputDefaults = {
+            maxFileSize: 102400,
+            maxFileCount:0,
+            previewSettings: {
+                image: {width: "160px", height: "60px"},
+                text: {width: "213px", height: "160px"},
+                object: {width: "160px", height: "auto"},
+                pdf: {width: "160px", height: "160px"},
+                other: {width: "160px", height: "160px"}
+            },
+            previewZoomSettings: {
+                image: {width: "auto", height: "auto", 'max-width': "100%", 'max-height': "100%"},
+                text: {width: "100%", height: "100%", 'min-height': "480px"},
+                object: {width: "auto", height: "100%", 'min-height': "480px"},
+                pdf: {width: "100%", height: "100%", 'min-height': "480px"},
+                other: {width: "auto", height: "100%", 'min-height': "480px"}
+            },
+            uploadUrl: basePath + "/project/point/salary/uploadMultipleFile",
+            deleteUrl: basePath + "/project/point/salary/deletefile",
+            allowedPreviewTypes : ['image', 'object']
+      }
+      var defaults = {
+            title: "请上传附件",
+            getFileResultUrl: basePath+"/project/point/salary/getFiles",
+            downloadFileUrl: basePath+"/project/point/salary/download/",
+            fileinput: fileinputDefaults,
+            showType:'detail',
+            window:true,
+            callback:function(fileId,oldfileIds){
+                this.showFiles({
+                    fileIds:fileId,
+                    type:'preview'
+                });
+            }
+      }
+      
+      $("#uploadFile").file($.extend({}, defaults, {
+          title:"请上传附件",
+          fileinput:$.extend({}, fileinputDefaults, {
+              uploadExtraData: {"fileField":"fileId"}
+          }),
+          showContainer:'#attachment',
+          fileIdContainer:"[name='fileId']",
+          extraPreviewConfig:{
+              "fileField":"fileId"
+          }
+      }));
+
+</script>

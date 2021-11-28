@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+
+	<!-- 责任考核表-->
+	<query id="dutycheck_list" key="id" tableName="责任考核列表" className="com.radish.master.entity.DutyCheck"
+		   pageSize="10"  widthType="px" order="id asc">
+		<column key="project_id" header="项目id" width="50" allowSort="false" hidden="true"/>
+		<column key="duties" header="职位" operator="like" width="100" render="1=总工程师,2=安全管理科,3=经理,4=生产副经理,5=项目经理,6=工长,7=技术负责人,8=安全员,9=质检员"/>
+		<column key="name" header="姓名" operator="like" width="100" allowSort="true"/>
+		<column key="unitName" header="单位名称" operator="like" width="100"/>
+		<column key="project_name" header="工程名称" operator="like" width="100"/>
+		<column key="check_name" header="考核人" operator="like" width="100"  />
+		<column key="check_time" header="考核时间"  classType="java.util.Date" operator="between" width="150" dateFormat="yyyy-mm-dd"/>
+	</query>
+	
+	<query id="safejsjd_List" key="id" tableName="公司交底列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id, wj.create_time create_time,wj.number number, wj.dx dx,wj.ty ty,
+              p.project_name pName ,wj.proid pid ,wj.create_name create_name ,
+              wj.jdtime jdtime ,wj.bmfzr bmfzr ,wj.fxlx fxlx
+			  FROM tbl_SafeSkillJD wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id  order by jdtime desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="ty" header="类型" width="80" render="1=专项方案交底,2=安全技术交底,3=安全交底,11=建筑机械安全技术交底,12=分部（分项）工程及工种安全技术交底,13=临时施工用电技术交底"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="jdtime" header="交底日期" classType="String" width="150" allowSort="true" operator="between"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="fxlx" header="分项内容" classType="String" width="150"/>
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+	<query id="checkRecordListAQ" key="id" tableName="安全管理文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.number number , wj.parent_ID parent_ID, wj.create_time create_time,
+              wj.update_time update_time ,p.project_name pName ,wj.proid pid ,wj.name name 
+			  FROM tbl_checkItemAQ wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="number" header="文件编号" classType="String" allowSort="true" width="150"/>
+        <column key="name" header="文件名称" classType="String" allowSort="true" width="150"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="checkRecordListMbAQ" key="id" tableName="安全管理模板列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.name name , wj.parent_ID parent_ID, wj.create_time create_time,
+              wj.update_time update_time 
+			  FROM tbl_checkItemMbAQ wj 
+			  WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="模板名称" classType="String" allowSort="true" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="id" header="模板详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="worker_list" key="id" tableName="班组人员花名册"     widthType="px">
+        <sql>
+            <![CDATA[
+             select wks.* 
+             from(
+              SELECT wk.* ,(select zz.name from tbl_worker zz where wk.leaderid= zz.id ) leadername ,
+              (select GROUP_CONCAT(gx.team_name) from tbl_user_team gx where gx.user_id = wk.id) bz
+			  FROM tbl_worker wk ) wks
+			  WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="bz" header="所在班组" align="left" width="100" operator="like"/>
+        <column key="isleader" header="是否组长" width="100"/>
+        <column key="leadername" header="组长姓名" operator="like" width="100" allowSort="true" />
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="work_type" header="工种" align="left" width="100"/>
+        <column key="ethnic" header="民族" align="left" width="100"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生日期" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="political" header="政治面貌" width="80" allowSort="true" />
+        <column key="working_year" header="岗位年限" align="right" operator="eq" width="100"  />
+        <column key="mobile" header="电话号码" width="200" align="center"/>
+        <column key="identification_number" header="身份证" width="200" align="center"/>
+         <column key="id" header="操作" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="workerhod_list" key="id" tableName="门卫机修花名册" className="com.radish.master.entity.project.WorkerHod" pageSize="20"  widthType="px">
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="version" header="version" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="workType" header="工种" align="left" width="100"/>
+        <column key="ethnic" header="民族" align="left" width="100"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="birthday" header="出生日期" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+        <column key="political" header="政治面貌" width="80" allowSort="true" />
+        <column key="workingYear" header="岗位年限" align="right" operator="eq" width="100"  />
+        <column key="mobile" header="电话号码" width="200" align="center"/>
+        <column key="identificationNumber" header="身份证" width="200" align="center"/>
+    </query>
+    <query id="aqxy_List" key="id" tableName="安全协议" className="com.radish.master.entity.safty.Aqxy" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="名称" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="create_name" header="创建人" classType="String" width="150"/>
+        <column key="id" header="附件" width="100" fnRender="fnFj"/>
+    </query>
+    <query id="aqys_List" key="id" tableName="安全验收" className="com.radish.master.entity.safty.Aqys" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="proname" header="项目" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="ystime" header="验收日期" classType="java.util.Date" width="150" allowSort="true" operator="between"  dateFormat="yyyy-mm-dd"/>
+        <column key="ysr" header="验收人" classType="String" width="150"/>
+        <column key="id" header="附件" width="100" fnRender="fnFj"/>
+    </query>
+    
+    <query id="aqCheckFile_ListRC" key="id" tableName="安全定期记录文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,  wj.create_time create_time, wj.number number, wj.status status,wj.isfk isfk,
+              p.project_name pName ,wj.proid pid ,wj.checktime checktime
+			  FROM tbl_aqcheck wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id and wj.types='10'
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="checktime" header="检查日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=项目回复,30=复查,40=完成"/>
+        <column key="isfk" header="罚款详情" width="80" fnRender="fnRenderFk"/>
+        <column key="id" header="管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+    <query id="aqCheckFile_ListDQ" key="id" tableName="安全定期记录文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,  wj.create_time create_time, wj.number number, wj.status status,wj.isfk isfk,
+              p.project_name pName ,wj.proid pid ,wj.checktime checktime
+			  FROM tbl_aqcheck wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id and wj.types='20'
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="checktime" header="检查日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=项目回复,30=复查,40=完成"/>
+        <column key="isfk" header="罚款详情" width="80" fnRender="fnRenderFk"/>
+        <column key="id" header="管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+     <query id="aqCheckFile_ListBDQ" key="id" tableName="安全不定期记录文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,  wj.create_time create_time, wj.number number, wj.status status,wj.isfk isfk,
+              p.project_name pName ,wj.proid pid ,wj.checktime checktime
+			  FROM tbl_aqcheck wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id and wj.types='40'
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="checktime" header="检查日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=项目回复,30=复查,40=完成"/>
+        <column key="isfk" header="罚款详情" width="80" fnRender="fnRenderFk"/>
+        <column key="id" header="管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+    <query id="aqCheckFile_ListZX" key="id" tableName="安全定期记录文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,  wj.create_time create_time, wj.number number, wj.status status,wj.isfk isfk,
+              p.project_name pName ,wj.proid pid ,wj.checktime checktime
+			  FROM tbl_aqcheck wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id and wj.types='30'
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="checktime" header="检查日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=项目回复,30=复查,40=完成"/>
+        <column key="isfk" header="罚款详情" width="80" fnRender="fnRenderFk"/>
+        <column key="id" header="管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+    <query id="aqsjjyList" key="id" tableName="安全三级教育内容列表" className="com.radish.master.entity.safty.Aqjynr" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="descs" header="名称" operator="like" width="100" allowSort="true" />
+        <column key="create_name" header="最后修改人" operator="like" width="100" allowSort="true" />
+    	<column key="create_time" header="创建日期" classType="java.util.Date" width="150" allowSort="true" operator="between"  dateFormat="yyyy-mm-dd"/>
+    </query>
+     <query id="aqjyList" key="id" tableName="安全教育" widthType="px" pageSize="50">
+        <sql>
+            <![CDATA[
+            select jys.* from (
+              SELECT jy.* ,(select le.name from tbl_worker wk,tbl_worker le where wk.id = jy.workerid and wk.leaderid = le.id) leaname
+			  FROM tbl_aqjy jy ) jys 
+			  WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="leaname" header="组长姓名" operator="like" width="100" allowSort="true" />
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="work_type" header="工种"  width="100"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+        <column key="status" header="状态"  width="100" render="10=新建,20=班组教育,30=项目教育,40=公司教育,50=完成" />
+    	<column key="create_time" header="创建日期" classType="java.util.Date" width="150" allowSort="true" operator="between" />
+   		<column key="id" header="文件附件管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+     <query id="aqjyList_auidt" key="id" tableName="安全教育审核" widthType="px">
+        <sql>
+            <![CDATA[
+            select jys.* from (
+              SELECT jy.* ,(select leaderid from tbl_worker wk where wk.id = jy.workerid ) leaderid
+			  FROM tbl_aqjy jy ) jys 
+			  WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="work_type" header="工种"  width="100"/>
+        <column key="sex" header="性别" operator="eq" width="150" allowSort="true" render="1=男,0=女" />
+    	<column key="create_time" header="创建日期" classType="java.util.Date" width="150" allowSort="true" operator="between" />
+   		<column key="id" header="查看审核" width="80" fnRender="fnRenderGl"/>
+    </query>
+    <query id="aqjyfjList" key="id" tableName="安全教育附件列表" className="com.radish.master.entity.safty.Aqjyfj" widthType="px" pageSize="200">
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="ly" header="文件来源" operator="like" width="100" allowSort="true" render="10=管理员新增,20=班组新增,30=项目新增,40=公司新增"  />
+        <column key="fjtypename" header="文件种类"  width="100"/>
+        <column key="create_name" header="创建人"  width="100"/>
+    	<column key="create_time" header="创建日期" classType="java.util.Date" width="150" allowSort="true" operator="between"  dateFormat="yyyy-mm-dd"/>
+   		<column key="id" header="文件附件管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+    
+    <query id="worker_unselected_list" key="id" tableName="未绑定组长列表"     widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wk.name name,wk.id id ,wk.identification_number identification_number,wk.work_type work_type
+			  FROM tbl_worker wk 
+			  WHERE wk.isleader <> '是' and wk.leaderid is null and  1=1 
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="identification_number" header="身份证" width="200" align="center"/>
+        <column key="work_type" header="工种"  width="100"/>
+    </query>
+    <query id="worker_selected_list" key="id" tableName="已绑定组长列表"     widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT ywk.name name,ywk.id id ,ywk.identification_number identification_number,ywk.work_type work_type
+			  FROM tbl_worker ywk 
+			  WHERE ywk.id<>ywk.leaderid and 1=1 
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="50" allowSort="false"/>
+        <column key="id" header="id" hidden="true"/>
+        <column key="name" header="姓名" operator="like" width="100" allowSort="true" />
+        <column key="identification_number" header="身份证" width="200" align="center"/>
+        <column key="work_type" header="工种"  width="100"/>
+    </query>
+    
+    <query id="aqFiles_list" key="id" tableName="安全文件" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.number number , wj.parent_ID parent_ID, wj.create_time create_time,
+              wj.update_time update_time ,p.project_name pName ,wj.proid pid ,wj.name name ,wj.status status,wj.type type
+			  ,wj.fileType fileType,wj.reserve2 reserve2
+			  FROM tbl_checkItemAQ wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="number" header="文件编号" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="文件类型" classType="String" allowSort="true" width="150"/>
+        <column key="name" header="文件名称" classType="String" allowSort="true" width="150"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态"  width="100" fnRender="fnRenderZt" />
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqFiles_list10" key="id" tableName="安全文件10" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.number number , wj.parent_ID parent_ID, wj.create_time create_time,
+              wj.update_time update_time ,p.project_name pName ,wj.proid pid ,wj.name name ,wj.status status,wj.type type
+			  ,wj.fileType fileType,wj.reserve2 reserve2,wj.notes notes 
+			  FROM tbl_checkItemAQ wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id  order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="number" header="文件编号" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="文件类型" classType="String" allowSort="true" width="150"/>
+        <column key="name" header="文件名称" classType="String" allowSort="true" width="150"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="notes" header="布设区域" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态"  width="100" fnRender="fnRenderZt" />
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqTest_list1" key="id" tableName="安全考核1" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.station station,wj.khr khr,wj.bkhr bkhr,wj.rq rq,wj.score score,wj.id id
+			  FROM tbl_aqtest wj left join tbl_project p  on wj.projectId = p.id 
+			  WHERE 1=1  order by rq desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="station" header="岗位" classType="String" allowSort="true" width="150"/>
+        <column key="khr" header="考核人" classType="String" allowSort="true" width="150"/>
+        <column key="bkhr" header="被考核人" classType="String" allowSort="true" width="150"/>
+        <column key="rq" header="考核日期" classType="String" width="150"  dateFormat="yyyy-mm-dd"/>
+        <column key="score" header="分数" classType="String" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqTest_list2" key="id" tableName="安全考核2" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.station station,wj.khr khr,wj.bkhr bkhr,wj.rq rq,wj.score score,wj.id id
+              ,wj.khdj khdj,wj.sgdw sgdw,p.project_name pName,wj.type type
+			  FROM tbl_aqtest wj left join tbl_project p  on wj.projectId = p.id 
+			  WHERE 1=1 and type in ('2','3') order by rq desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="type" header="类型" width="80" fnRender="fnRenderLX"/>
+        <column key="pName" header="所在项目" classType="String" allowSort="true" width="150"/>
+        <column key="station" header="岗位" classType="String" allowSort="true" width="150"/>
+        <column key="khr" header="考核人" classType="String" allowSort="true" width="150"/>
+        <column key="bkhr" header="被考核人" classType="String" allowSort="true" width="150"/>
+        <column key="khdj" header="考核等级" classType="String" allowSort="true" width="150"/>
+        <column key="rq" header="考核日期" classType="String" width="150"  dateFormat="yyyy-mm-dd"/>
+        <column key="score" header="分数" classType="String" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqTest_list4" key="id" tableName="安全考核4" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.station station,wj.khr khr,wj.bkhr bkhr,wj.rq rq,wj.score score,wj.id id,
+              wj.xmb xmb,wj.xmjl xmjl,wj.khdj khdj,wj.sgdw sgdw,p.project_name pName
+			  FROM tbl_aqtest wj left join tbl_project p  on wj.projectId = p.id 
+			  WHERE 1=1  order by rq desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所在项目" classType="String" allowSort="true" width="150"/>
+        <column key="xmb" header="项目部" classType="String" allowSort="true" width="150"/>
+        <column key="xmjl" header="项目经理" classType="String" allowSort="true" width="150"/>
+         <column key="khdj" header="考核等级" classType="String" allowSort="true" width="150"/>
+        <column key="rq" header="考核日期" classType="String" width="150"  dateFormat="yyyy-mm-dd"/>
+        <column key="score" header="分数" classType="String" width="150"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderXq"/>
+    </query>
+    
+    <query id="aqAll_list18" key="id" tableName="安全记录-项目管理人员年度培训记录" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.ID id,
+              wj.col1 col1,
+              wj.col2 col2,
+              wj.col3 col3,
+              wj.col4 col4,
+              wj.col5 col5,
+              wj.col6 col6,
+              wj.col7 col7,
+              wj.col8 col8,
+              wj.create_time create_time,
+              p.project_name pName ,
+              wj.proid pid ,
+              wj.type type,
+			  wj.fileType fileType
+			  FROM tbl_aqall wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="col1" header="年度" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="类型" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="姓名" classType="String" allowSort="true" width="150"/>
+        <column key="col3" header="岗位" classType="String" width="150"/>
+        <column key="col4" header="培训内容" classType="String" width="150" allowSort="true" />
+        <column key="col5" header="培训时间"  classType="String" width="150" allowSort="true"/>
+        <column key="col6" header="成绩"  classType="String" width="150" allowSort="true"/>
+        <column key="id" header="附件" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqAll_list19" key="id" tableName="安全记录-安全员企业年度培训考核记录" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.ID id,
+              wj.col1 col1,
+              wj.col2 col2,
+              wj.col3 col3,
+              wj.col4 col4,
+              wj.col5 col5,
+              wj.col6 col6,
+              wj.col7 col7,
+              wj.col8 col8,
+              wj.create_time create_time,
+              p.project_name pName ,
+              wj.proid pid ,
+              wj.type type,
+			  wj.fileType fileType,
+			  wj.notes notes
+			  FROM tbl_aqall wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="col1" header="年度" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="类型" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="姓名" classType="String" allowSort="true" width="150"/>
+        <column key="col3" header="岗位证号" classType="String" width="150"/>
+        <column key="col4" header="成绩"  classType="String" width="150" allowSort="true"/>
+        <column key="notes" header="备注"  classType="String" width="150" allowSort="true"/>
+        <column key="id" header="附件" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqAll_list20" key="id" tableName="安全记录-特种作业和机械操作人员花名册上岗证复印件" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.ID id,
+              wj.col1 col1,
+              wj.col2 col2,
+              wj.col3 col3,
+              wj.col4 col4,
+              wj.col5 col5,
+              wj.col6 col6,
+              wj.col7 col7,
+              wj.col8 col8,
+              wj.create_time create_time,
+              p.project_name pName ,
+              wj.proid pid ,
+              wj.type type,
+			  wj.fileType fileType,
+			  wj.notes notes
+			  FROM tbl_aqall wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="类型" classType="String" allowSort="true" width="150"/>
+        <column key="col1" header="工种" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="姓名" classType="String" allowSort="true" width="150"/>
+        <column key="notes" header="备注"  classType="String" width="150" allowSort="true"/>
+        <column key="id" header="上岗证复印件" width="80" fnRender="fnRenderXq"/>
+    </query>
+     <query id="aqAll_list21" key="id" tableName="安全记录-职工安全知识考试" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.ID id,
+              wj.col1 col1,
+              wj.col2 col2,
+              wj.col3 col3,
+              wj.col4 col4,
+              wj.col5 col5,
+              wj.col6 col6,
+              wj.col7 col7,
+              wj.col8 col8,
+              wj.create_time create_time,
+              p.project_name pName ,
+              wj.proid pid ,
+              wj.type type,
+			  wj.fileType fileType,
+			  wj.notes notes
+			  FROM tbl_aqall wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="类型" classType="String" allowSort="true" width="150"/>
+        <column key="col1" header="小组" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="姓名" classType="String" allowSort="true" width="150"/>
+        <column key="col3" header="地址" classType="String" allowSort="true" width="150"/>
+        <column key="col4" header="成绩" classType="String" allowSort="true" width="150"/>
+        <column key="notes" header="备注"  classType="String" width="150" allowSort="true"/>
+        <column key="id" header="上岗证复印件" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqsgssbb_list" key="id" tableName="安全事故伤亡报表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.id id,
+              wj.ybrq ybrq,
+              p.project_name pName ,
+              wj.projectid pid ,
+              wj.sgfsrq sgfsrq,
+			  wj.xmjl xmjl,
+			  wj.sgjg sgjg,
+			  wj.bhyy bhyy,
+			  wj.status status
+			  FROM tbl_aqsgswbb wj ,tbl_project p 
+			  WHERE 1=1 and wj.projectid = p.id order by wj.ybrq desc,wj.sgfsrq desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="xmjl" header="项目经理" classType="String" allowSort="true" width="150"/>
+        <column key="ybrq" header="月报日期" classType="String" allowSort="true" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="sgfsrq" header="事故发生日期" classType="String" allowSort="true" width="150" dateFormat="yyyy-mm-dd"/>
+        <column key="sgjg" header="事故经过" classType="String" allowSort="true" width="150"/>
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=驳回,30=项目经理审核,40=完成"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="aqsgssbbry_list" key="id" tableName="安全事故伤亡报表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.id id,
+              wj.pid pid,
+              wj.col1 col1 ,
+              wj.col2 col2 ,
+              wj.col3 col3 ,
+              wj.col4 col4 ,
+              wj.col5 col5 ,
+              wj.col6 col6 ,
+              wj.col7 col7 ,
+              wj.col8 col8 
+			  FROM tbl_aqsgswbbry wj 
+			  WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderSalaryDetail"/>
+        <column key="col1" header="姓名" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="性别" classType="String" allowSort="true" width="150"/>
+        <column key="col3" header="年龄" classType="String" allowSort="true" width="150"/>
+        <column key="col4" header="工种" classType="String" allowSort="true" width="150"/>
+        <column key="col5" header="工龄" classType="String" allowSort="true" width="150"/>
+        <column key="col6" header="伤亡情况" classType="String" allowSort="true" width="150"/>
+        <column key="col7" header="事故类别" classType="String" allowSort="true" width="150"/>
+        <column key="col8" header="是否经过安全培训" classType="String" allowSort="true" width="150"/>
+    </query>
+    
+    
+    <query id="aqAll_list16" key="id" tableName="安全记录-变换工种登记" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.ID id,
+              wj.col1 col1,
+              wj.col2 col2,
+              wj.col3 col3,
+              wj.col4 col4,
+              wj.col5 col5,
+              wj.col6 col6,
+              wj.col7 col7,
+              wj.col8 col8,
+              wj.create_time create_time,
+              p.project_name pName ,
+              wj.proid pid ,
+              wj.type type,
+			  wj.fileType fileType
+			  FROM tbl_aqall wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="col1" header="性别" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="类型" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="姓名" classType="String" allowSort="true" width="150"/>
+        <column key="col3" header="年龄" classType="String" width="150"/>
+        <column key="col4" header="进单位年月" classType="String" width="150" allowSort="true" />
+        <column key="col5" header="原工种"  classType="String" width="150" allowSort="true"/>
+        <column key="col6" header="现工种"  classType="String" width="150" allowSort="true"/>
+        <column key="col7" header="证件号"  classType="String" width="150" allowSort="true"/>
+        <column key="id" header="附件" width="80" fnRender="fnRenderXq"/>
+    </query>
+    
+     <query id="aqAll_list17" key="id" tableName="安全记录-管理人员和特殊工种企业年度安全培训登记表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT 
+              wj.ID id,
+              wj.col1 col1,
+              wj.col2 col2,
+              wj.col3 col3,
+              wj.col4 col4,
+              wj.col5 col5,
+              wj.col6 col6,
+              wj.col7 col7,
+              wj.col8 col8,
+              wj.create_time create_time,
+              p.project_name pName ,
+              wj.proid pid ,
+              wj.type type,
+			  wj.fileType fileType
+			  FROM tbl_aqall wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id order by wj.create_time desc
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" allowSort="true" width="150"/>
+        <column key="col1" header="受教育者姓名" classType="String" allowSort="true" width="150"/>
+        <column key="fileType" header="类型" classType="String" allowSort="true" width="150"/>
+        <column key="col2" header="职务" classType="String" allowSort="true" width="150"/>
+        <column key="col3" header="培训人姓名" classType="String" width="150"/>
+        <column key="col4" header="教育时间" classType="String" width="150" allowSort="true" />
+        <column key="col5" header="教育日期"  classType="String" width="150" allowSort="true"/>
+        <column key="id" header="附件" width="80" fnRender="fnRenderXq"/>
+    </query>
+</queryContext>

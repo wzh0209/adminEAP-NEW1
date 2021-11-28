@@ -1,0 +1,385 @@
+<section class="content-header">
+    <h1>
+        员工信息
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">办公管理</a></li>
+        <li class="active">员工信息查询</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs pull-right">
+                    <li><a href="#tab-content-edit" data-toggle="tab" id="nav-tab-detail"><i class="fa fa-edit"></i></a></li>
+                    <li class="active"><a href="#tab-content-list" data-toggle="tab" id="nav-tab-list"><i class="fa fa-list-ul"></i></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-content-list">
+			                <!-- /.box-header -->
+			                <div class="dataTables_filter" id="searchDiv" style="display: none">
+			                    <!--查询条件-->
+			                   <input type="search"  title="审核" name = "auditStatus" id="audit_status" value="10" style="display:none">
+			                   <select id="deptId" class="form-control select2" name="deptId" style="width:200px;" operator="eq">
+			                        <option selected="selected" value="">选择一个部门</option>
+			                   </select>
+			                   <input type="search" placeholder="请输入姓名" title="姓名" name="name" class="form-control" id="name" operator="like" likeOption="true">
+			                   <div class="input-group">
+			                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			                        <input type="search" placeholder="开始生日" title="生日" name="birthday" data-flag="datepicker" class="form-control" data-format="yyyy-mm-dd">
+			                    </div>
+			                    ~
+			                    <div class="input-group">
+			                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+			                        <input type="search" placeholder="结束生日" title="生日" name="birthday" data-flag="datepicker" class="form-control" data-format="yyyy-mm-dd">
+			                    </div>
+			                    <select id="education1" class="form-control select2" name="education" style="width:200px;" operator="eq">
+			                        <option selected="selected" value="">选择学历</option>
+			                   </select>
+			                    <div class="btn-group">
+			                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+			                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+			                    </div>
+			                    <div class="btn-group">
+			                        <button type="button" class="btn btn-default" data-btn-type="detail">查看详情</button>
+			                    </div>
+			                </div>
+			                <div class="box-body box-body-mobile">
+			                    <table id="employee_table" class="table table-bordered table-striped table-hover">
+			                    </table>
+			                </div>
+		            </div>
+		            <div class="tab-pane" id="tab-content-edit">
+                        <div class="box box-info">
+                            <form id="user-form" name="user-form" class="form-horizontal">
+                                <input type="hidden" name="id">
+                                <input type="hidden" name="version">
+                                <input type="hidden" name="createDateTime" data-flag="date" data-format="yyyy-mm-dd hh:ii:ss">
+                                <input type="hidden" name="deleted">
+                                <div class="box-body">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+								<label for="name" class="col-sm-3 control-label">姓名</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="name" name="name" placeholder="姓名">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="birthday" class="col-sm-3 control-label">出生日期</label>
+								<div class="input-group col-sm-8">
+									<span class="input-group-addon">
+									   <i class="fa fa-calendar"></i>
+									</span> 
+									<input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd" name="birthday" id="birthday" placeholder="出生日期">
+								</div>
+							</div>
+							<div class="form-group">
+                                <label for="deptName" class="col-sm-3 control-label">部门</label>
+
+                                <div class="col-sm-6">
+                                    <input type="hidden" name="deptId" id="deptId" >
+                                    <input type="text" class="form-control" id="deptName" name="deptName" placeholder="所在部门" oninput="getJobs()">
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="button" class="btn btn-info" data-flag="org"><i
+                                            class="fa fa-sitemap"></i>&nbsp;选择
+                                    </button>
+                                </div>
+                            </div>
+							<div class="form-group">
+								<label for="telphone" class="col-sm-3 control-label">座机</label>
+
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="telphone" name="telphone" placeholder="座机">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="email" class="col-sm-3 control-label">Email</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="email" name="email" placeholder="Email">
+								</div>
+							</div>
+							<div class="form-group">
+                                <label for="identificationNumber" class="col-sm-3 control-label">身份证号</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="identificationNumber" name="identificationNumber" placeholder="身份证号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bloodType" class="col-sm-3 control-label">血型</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="bloodType" name="bloodType" placeholder="血型">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="col-sm-3 control-label">学历</label>
+                                <div class="col-sm-8">
+                                    <select id="education" class="form-control select2" name="education" style="width:100%">
+			                            <option selected="selected" value="">选择一个学历</option>
+			                        </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="school" class="col-sm-3 control-label">毕业学院</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="school" name="school" placeholder="毕业学院">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyContact" class="col-sm-3 control-label">紧急联系人</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="emergencyContact" name="emergencyContact" placeholder="紧急联系人">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="workType" class="col-sm-3 control-label">工种</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="workType" name="workType" placeholder="工种">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="age" class="col-sm-3 control-label">年龄</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="age" name="age" placeholder="年龄">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobNumber" class="col-sm-3 control-label">工号</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="jobNumber" name="jobNumber" placeholder="工号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bankCount" class="col-sm-3 control-label">银行账户</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="bankCount" name="bankCount" placeholder="银行账户">
+                                </div>
+                            </div>
+                         </div>
+                                   <div class="col-md-6">
+                <div class="form-group">
+								<label class="col-sm-3 control-label">性别</label>
+
+								<div class="col-sm-8">
+									<label class="control-label"> 
+									   <input type="radio" name="sex" data-flag="icheck" class="square-green" value="1"> 男
+									</label> &nbsp; 
+									<label class="control-label"> 
+									   <input type="radio" name="sex" data-flag="icheck" class="square-green" value="0"> 女
+									</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="loginName" class="col-sm-3 control-label">登录名</label>
+
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="loginName" name="loginName" placeholder="登录名">
+								</div>
+							</div>
+							<div class="form-group">
+                                <label for="jobId" class="col-sm-3 control-label">职务</label>
+                                <div class="col-sm-8">
+                                    <select type="text" class="form-control" id="job" name="jobId" placeholder="职务" >
+                                        <option selected="selected" value="">选择一个职务</option>
+                                    </select>
+                                </div>
+                            </div>
+							<div class="form-group">
+								<label for="mobile" class="col-sm-3 control-label">手机</label>
+
+								<div class="col-sm-8">
+									<!--<input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机"
+                                                           data-inputmask='"mask": "9999999999999"' data-mask>-->
+									<input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="qq" class="col-sm-3 control-label">QQ</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="qq" name="qq" placeholder="QQ">
+								</div>
+							</div>
+							<div class="form-group">
+                                <label for="email" class="col-sm-3 control-label">民族</label>
+                                <div class="col-sm-8">
+                                    <select id="ethnic" class="form-control select2" name="ethnic" style="width:100%">
+			                            <option selected="selected" value="">选择一个民族</option>
+			                        </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="political" class="col-sm-3 control-label">政治面貌</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="political" name="political" placeholder="政治面貌">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="col-sm-3 control-label">家庭住址</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="address" name="address" placeholder="家庭住址">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="professional" class="col-sm-3 control-label">专业</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="professional" name="professional" placeholder="专业">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyContactPhone" class="col-sm-3 control-label">紧急联系人电话</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="emergencyContactPhone" name="emergencyContactPhone" placeholder="紧急联系人电话">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="basicSalary" class="col-sm-3 control-label">基本工资</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="basicSalary" name="basicSalary" placeholder="基本工资">
+                                </div>
+                            </div>
+                            <div class="form-group">
+								<label for="hireDate" class="col-sm-3 control-label">入职时间</label>
+								<div class="input-group col-sm-8">
+									<span class="input-group-addon">
+									   <i class="fa fa-calendar"></i>
+									</span> 
+									<input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd" name="hireDate" id="hireDate" placeholder="入职时间">
+								</div>
+							</div>
+							<div class="form-group">
+                                <label for="someTitle" class="col-sm-3 control-label">职称</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="someTitle" name="someTitle" placeholder="职称">
+                                </div>
+                            </div>
+            </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="form-group">
+					                    <label for="dutyContent" class="col-sm-2 control-label">职责描述</label>
+					
+					                    <div class="col-sm-9">
+					                        <textarea class="form-control" id="dutyContent" name="dutyContent" placeholder="职责描述" rows="5"></textarea>
+					                    </div>
+				            		</div>
+                                <!-- /.box-footer -->
+                            </form>
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var auditStatus="${auditStatus?default(10)}";
+    if(auditStatus == 20){
+    	setTitle("离职员工列表")
+        initData.auditStatus = auditStatus;
+        form.initFormData(initData);
+    }
+    
+    var deptOptions = '${deptOptions?default(0)}',dOptions=0;
+    if(deptOptions != 0){
+    	dOptions = JSON.parse(deptOptions);
+    }
+    
+    var eduOptions = '${eduOptions?default(0)}',edOptions=0;
+    if(eduOptions != 0){
+    	edOptions = JSON.parse(eduOptions);
+    }
+    
+    var ethOptions = '${ethOptions?default(0)}',etOptions=0;
+    if(ethOptions != 0){
+    	etOptions = JSON.parse(ethOptions);
+    }
+
+    var employeeQueryTable, winId = "employeeQueryWin";
+    $(function (){
+        employeeQueryTable = new CommonTable("employee_table", "employee_list", "searchDiv", null);
+        
+        $("#nav-tab-list").on("click",function(){
+            setTitle("员工列表");
+        });
+        
+        //绑定按钮事件
+        $("button[data-btn-type]").click(function () {
+            var action = $(this).data("btn-type");
+            var rowId = employeeQueryTable.getSelectedRowId();
+            switch (action) {
+                case "detail":
+                	if(!rowId){
+                        modals.info('请选择要查看的行');
+                        return false;
+                    }
+                	var detailForm=$("#user-form").form();
+                	detailForm.clearForm();
+                    setTitle("查看用户【"+employeeQueryTable.getSelectedRowData().name+"】")
+                    $("#nav-tab-detail").click();
+                    ajaxPost(basePath+"/employeeQuery/get/"+employeeQueryTable.getSelectedRowData().id,null,function(data){
+                    	detailForm.initFormData(data);
+                    });
+                    break;
+            }
+        });
+        
+        $("#employee_table").on("dblclick", "tr", function(){
+        	var detailForm=$("#user-form").form();
+            detailForm.clearForm();
+            setTitle("查看用户【"+employeeQueryTable.getSelectedRowData().name+"】")
+            $("#nav-tab-detail").click();
+            ajaxPost(basePath+"/employeeQuery/get/"+employeeQueryTable.getSelectedRowData().id,null,function(data){
+                detailForm.initFormData(data);
+            });
+		});
+        
+        if(dOptions != 0){
+            for (var i = 0, len = dOptions.length; i < len; i++) {
+                var option = dOptions[i];
+                $('#deptId').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $("#deptId").select2();
+        }
+        
+        if(edOptions != 0){
+            for (var i = 0, len = edOptions.length; i < len; i++) {
+                var option = edOptions[i];
+                $('#education1').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+                $('#education').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $("#education1").select2();
+            $("#education").select2();
+        }
+        
+        if(etOptions != 0){
+            for (var i = 0, len = etOptions.length; i < len; i++) {
+                var option = etOptions[i];
+                $('#ethnic').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $("#ethnic").select2();
+        }
+    });
+    
+    function setTitle(title){
+       $("ul.nav-tabs li.header small").text(title);
+    }
+    
+    function fnRenderDept(value) {
+        if (value) {
+            var ret=value;
+            ajaxPost(basePath + "/org/show/"+value, null, function (data) {
+                ret=data.data;
+            })
+            return ret;
+        } else
+            return value;
+    }
+</script>

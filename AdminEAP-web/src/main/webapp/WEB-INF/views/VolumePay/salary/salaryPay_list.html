@@ -1,0 +1,201 @@
+<section class="content-header">
+    <h1>
+        工资支付
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">项目管理</a></li>
+        <li class="active">工资支付</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv">
+                	 日期范围：
+       				 <input name="start_time"  class="form-control date-picker" data-flag="datepicker" data-format="yyyy-mm-dd" operator="between"/>
+       				 ——
+       				 <input name="start_time"  class="form-control date-picker" data-flag="datepicker" data-format="yyyy-mm-dd" operator="between"/>
+                    <select id="projectID" class="form-control select2" name="project_id" style="width:200px;" operator="eq">
+                        <option selected="selected" value="">选择一个项目</option>
+                    </select>
+                    <select id="bzid" class="form-control select2" name="team_id" style="width:200px;" operator="eq">
+                        <option selected="selected" value="">选择一个班组</option>
+                    </select>
+                    <select id="type" class="form-control select2" name="type" style="width:200px;" operator="eq">
+                        <option selected="selected" value="">选择一个类型</option>
+                        <option value="10">专业作业班组</option>
+                        <option value="20">管理人员</option>
+                        <option value="30">点工班组</option>
+                        <option value="40">机关人员</option>
+                        <option value="50">门卫机修</option>
+                        <option value="60">13薪</option>
+                        <option value="70">奖金</option>
+                         <option value="80">津贴</option>
+                    </select>
+                    <select id="status" class="form-control select2" name="status" style="width:200px;" operator="eq">
+                        <option selected="selected" value="">选择状态</option>
+                        <option value="10">新建</option>
+                        <option value="20">负责人审批</option>
+                        <option value="30">办公室主任审批</option>
+                        <option value="40">总经理审批</option>
+                        <option value="50">财务审批</option>
+                        <option value="60">已完成(未支付)</option>
+                        <option value="70">审核不通过</option>
+                        <option value="80">支付审核</option>
+                        <option value="90">待财务支付</option>
+                        <option value="100">支付完成</option>
+                        <option value="110">支付审核驳回</option>
+                    </select>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="team_salary_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var teamSalaryTable, winId = "teamSalaryWin";
+    var projectOptions = '${projectOptions?default(0)}',options=0;
+    if(projectOptions != 0){
+        options = JSON.parse(projectOptions);
+    }
+    var teams = '${bz?default(0)}',team=0;
+    if(teams != 0){
+    	team = JSON.parse(teams);
+    }
+    var uid = '${uid?default(0)}';
+    var teamSalaryObject = {
+            startFlow: function (mechID) {
+                modals.confirm("是否要提交审批？",function(){
+                    ajaxPost(basePath + '/salarypay/start', {id:mechID}, function (data) {
+                        if (data.success) {
+                        	teamSalaryTable.reloadData();
+                            modals.correct("流程已启动，请及时处理");
+                        } else {
+                            modals.error(data.message);
+                        }
+                    });
+                });
+            },
+            overview: function (rowID,type) {
+                var url=basePath+"/project/team/salary/detail/"+rowID;
+                if(type=="10"){//班组
+                	url=basePath+"/project/team/salary/detail/"+rowID;
+                }else if(type=="20"){//管理
+                	url=basePath+"/project/manager/salary/detailouter/"+rowID;
+                }else if(type=="30"){//点工
+                	url=basePath+"/project/point/salary/detail/"+rowID;
+                }else if(type=="40"){//机关
+                	url=basePath+"/project/organ/salary/detailouter/"+rowID;
+                }else if(type=="50"){//门卫
+                	url=basePath+"/project/hod/salary/detailouter/"+rowID;
+                }else{//其他
+                	url=basePath+"/project/else/salary/detailouter/"+rowID;
+                }
+               modals.openWin({
+                   winId:winId,
+                   title:'工资表总览',
+                   width:'1400px',
+                   url:url
+                  }); 
+            },
+            dotrue: function (rowID) {
+            	modals.confirm("是否确认支付？",function(){
+                    ajaxPost(basePath + '/salarypay/dotrue', {id:rowID}, function (data) {
+                    	if (data.success) {
+                    		teamSalaryTable.reloadData();
+                            modals.correct("支付成功");
+                        }
+                    });
+                });
+            },
+            print: function (rowID) {
+            	modals.openWin({
+                    winId:winId,
+                    title:'选择支付方式',
+                    width:'600px',
+                    url:basePath+"/salarypay/chooseZffs?id="+rowID
+                   });
+            },
+            jz:function(rowID){
+            	modals.confirm("是否确认记账？",function(){
+                    ajaxPost(basePath + '/salarypay/dojz', {id:rowID}, function (data) {
+                    	if (data.success) {
+                    		teamSalaryTable.reloadData();
+                            modals.correct("记账成功");
+                        }
+                    });
+                });
+            }
+    }
+    
+    $(function (){
+    	teamSalaryTable = new CommonTable("team_salary_table", "salary_list_pay", "searchDiv", null);
+        
+        //绑定按钮事件
+        /* $("button[data-btn-type]").click(function () {
+            var action = $(this).data("btn-type");
+            var rowId = teamSalaryTable.getSelectedRowId();
+            switch (action) {
+                case "print":
+	                if(!rowId){
+	                    modals.info('请选择要打印的行');
+	                    return false;
+	                }
+	                var url = basePath+"/ureport/preview?_u=file:salaryBz.ureport.xml&_t=1,5&id="+rowId+"&uid="+uid;
+               	 	window.open(url);
+	                break;
+            }
+        }); */
+        
+        if(options != 0){
+            for (var i = 0, len = options.length; i < len; i++) {
+                var option = options[i];
+                $('#projectID').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $("#projectID").select2();
+        }
+        if(team != 0){
+            for (var i = 0, len = team.length; i < len; i++) {
+                var option = team[i];
+                $('#bzid').append("<option value=\"" + option.id + "\">" + option.teamName + "</option>");
+            }
+            $("#bzid").select2();
+        }
+        $(".select2").select2();
+    });
+    
+    function fnRenderSalary(value, type, rowObj) {
+        var oper = "";
+        if(rowObj.status=="已完成(未支付)"||rowObj.status=="支付审核驳回"){//提交审核按钮
+        	oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='teamSalaryObject.startFlow(\"" + value + "\")'>提交支付审核</a>";
+        }
+        if(rowObj.status=="待财务支付"){//支付确认按钮
+        	oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='teamSalaryObject.dotrue(\"" + value + "\")'>确认支付</a>";
+        	oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='teamSalaryObject.print(\"" + value + "\")'>打印支付单</a>";
+        }
+        if(rowObj.status=="支付完成"){//打印支付单按钮
+        	if(!rowObj.isjz){
+				oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='teamSalaryObject.jz(\"" + value + "\")'>记账</a>";
+			}
+        	oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='teamSalaryObject.print(\"" + value + "\")'>打印支付单</a>";
+			
+       }
+        oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='teamSalaryObject.overview(\"" + value + "\",\""+rowObj.typee+"\")'>总览</a>";
+        return oper;
+    }
+    
+</script>

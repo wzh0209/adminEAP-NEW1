@@ -1,0 +1,369 @@
+
+<link rel="stylesheet" href="${basePath}/resources/common/libs/fileinput/css/fileinput.min.css">
+<script src="${basePath}/resources/common/libs/fileinput/js/fileinput.js"></script>
+<script src="${basePath}/resources/common/libs/fileinput/js/locales/zh.js"></script>
+<!--BaseFile组件-->
+<script src="${basePath}/resources/common/js/base-file.js"></script>
+ <style >
+     	#tb table{
+     		font-family: verdana,arial,sans-serif;
+	     	font-size:11px;
+	     	color:#333333;
+	      	border-width: 1px;
+	      	border-color: #666666;
+	      	border-collapse: collapse;
+	      	word-wrap:break-word; 
+	      	word-break:break-all;
+	      	display:block;
+     	}
+      	#tb th{
+     		 border-width: 1px;
+		     padding: 8px;
+		     border-style: solid;
+		     border-color: #666666;
+		     background-color: 	#FFEFDB;
+		     text-align: center;
+		     font-size: 15px
+		     
+     	}
+     	#tb td{
+	     	 border-width: 1px;
+		     padding: 8px;
+		     border-style: solid;
+		     border-color: #666666;
+		     background-color: #ffffff;
+		     text-align: center
+     	}
+     	#title td{
+     		 border-width: 0px;
+		     padding: 8px;
+		     border-color: #666666;
+		     background-color: #E0FFFF;
+		     text-align: center;
+		     font-size: 18px;
+		     font-weight: 500
+		     
+     	}
+        -webkit-scrollbar {/*滚动条整体样式*/
+            width: 1px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+            scrollbar-arrow-color:red;
+
+        }
+        -webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.2);
+            scrollbar-arrow-color:red;
+        }
+        -webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            border-radius: 0;
+            background: rgba(0,0,0,0.1);
+        }
+	</style>
+
+<section class="content-header">
+    <h1>
+        <span>统计管理</span>
+        <small>成本统计</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">统计管理</a></li>
+        <li class="active">成本统计</li>
+    </ol>
+</section>
+
+    
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-edit">生成统计数据</i>
+                    </span>
+                </div>
+                <form id="import_form" name="attendance_form" class="form-horizontal">
+                	<input type="text" id="Id" style="display: none" >
+                    <div class="box-body">
+                    	<div class="col-md-6">
+                    		<div class="form-group">
+		                    	<label for="projectId" class="col-sm-3 control-label">项目名称</label>
+		                   		<div class="col-sm-8">
+			                   		<select id="projectId" class="form-control select2 "  name="projectId" style="width:100%" >
+			                   			<option selected="selected" value="">选择一个项目</option>
+			                   		</select>
+		                   		</div>
+		                    </div>
+                    	</div>
+                   		 <div class="col-md-6">
+                   		 	<div class="form-group">
+		                    	<label for="projectId" class="col-sm-3 control-label">子项名称</label>
+		                   		<div class="col-sm-8">
+			                   		<select id="projectSubId" class="form-control select2 "  name="projectSubId" style="width:100%" >
+			                   			<option selected="selected" value="">选择一个子项</option>
+			                   		</select>
+		                   		</div>
+		                    </div>
+                    	</div>
+                    </div>
+                    <div class="box-footer text-center">
+                        <button type="button" class="btn btn-default" data-btn-type="add" id ="add">统计</button>
+<!--                         <button type="button" class="btn btn-default" data-btn-type="print" id ="print">打印</button>
+ -->                    </div>
+                </form>
+            </div>
+            <div class="box">
+                <div class="box-body">
+                	<div style="width: 100%;text-align: center;overflow-y:scroll;max-height:280px;">
+                    <table style="width: 98%;text-align: center; "id="tb">
+                    	
+                    	<thead>
+	                    	<tr id="title">
+	                    		<td colspan="11" style="text-align: center;font-size: 25px;font-weight: 600">测算汇总表</td>
+	                    	</tr>
+	                    	<tr >
+	                    		<th style="width: 60px;border: none"></th>
+	                    		<th style="width: 120px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    	</tr>
+                    		<tr >
+                    			<th colspan="2" ><span id="tabletitle"></span></th>
+                    			<th colspan="5" >导入预算</th>
+                    			<th colspan="4" >测算</th>
+                    		</tr>
+                    		<tr>
+                    			<th colspan="1"  rowspan="2" >序号</th>
+                    			<th colspan="1"  rowspan="2"  >名称</th>
+                    			<th colspan="1"  rowspan="2"  >导入合价</th>
+                    			<th colspan="4"  >其中</th>
+                    			<th rowspan="2" >测算合价</th>
+                    			<th colspan="3"  >其中</th>
+                    		</tr>
+                    		<tr >
+                    			<th >人工合计</th>
+                    			<th >材料合计</th>
+                    			<th >机械合计</th>
+                    			<th >主材费合计</th>
+                    			<th >人工合计</th>
+                    			<th >材料合计</th>
+                    			<th >机械合计</th>
+                    		</tr>
+                    	</thead>
+                    	<tbody  id="hjtbs" >
+                    		
+                    	</tbody>
+                    </table>
+                    </div>
+                    <div style="width: 100%;text-align: center;overflow-y:scroll;max-height:280px;">
+                    	<table style="width: 98%;text-align: center; "id="tb">
+                    	<thead>
+                    		<tr style="display: none">
+	                    		<th style="width: 60px;border: none"></th>
+	                    		<th style="width: 120px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    		<th style="width: 90px;border: none"></th>
+	                    	</tr>
+                    	</thead>
+                    	<tbody id="tbs">
+                    	
+                    	</tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+var pros = '${projectOptions?default(0)}',pro=0;
+if(pros != 0){
+	pro = JSON.parse(pros);
+}
+
+    var importform;
+    $(function () {
+    	
+    	
+        //初始化表单 
+        importform = $("#import_form").form({baseEntity:false});
+        //初始化控件
+        importform.initComponent();
+        if(pro != 0){
+            for (var i = 0, len = pro.length; i < len; i++) {
+                var u = pro[i];
+                $('#projectId').append("<option value='" + u.value + "'>" + u.data + "</option>");
+            }
+            $("#projectId").select2();
+        }
+        $("#projectId").bind("change", function () {
+            var value = $(this).val();
+            if (value === "") {
+                return false;
+            }
+            //加载子项
+            ajaxPost(basePath+"/projectvolume/getprojectsub",{projectID:value},function(data){
+                var laborSubOptions = data.message;
+                sOptions = JSON.parse(laborSubOptions);
+                $('#projectSubId').empty();
+                $('#projectSubId').append('<option selected="selected" value="">选择一个项目子项</option>');
+                for (var i = 0, len = sOptions.length; i < len; i++) {
+                    var option = sOptions[i];
+                    $('#projectSubId').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+                }
+                $('#projectSubId').select2();
+            });
+            //子项加载结束
+        });
+
+        
+        $("#print").on("click",function(){
+			var id = $("#Id").val();
+			if(id){
+				var url = basePath+"/ureport/preview?_u=file:costall.ureport.xml&_t=1,5&xmid="+id;
+		   	 	window.open(url);
+			}else{
+				modals.info("请先生成数据");
+			}
+        })
+        $("#add").on("click",function(){
+        	loadInfo();
+        })
+    });
+    function loadInfo(){
+        var projectId = $("#projectId option:selected").val();
+        var projectSubId = $("#projectSubId option:selected").val();
+		if(!projectId){
+			modals.info("请选择项目");
+     	   return;
+		}
+		if(!projectSubId){
+			modals.info("请选择子项");
+     	   return;
+		}
+        
+  	 	 $("#tbs").empty(); 
+    	$("#hjtbs").empty();
+    	ajaxPost(basePath+'/budgetCount/getList', {projectId:projectId,projectSubId:projectSubId}, function(data) {
+           var mxjcs = data;
+           if(mxjcs.length==0){
+        	   modals.info("数据条数0，请重新选择条件");
+        	   return;
+           }
+           $("#tabletitle").html(mxjcs[0].project_sub_name);
+           var tb= "";
+           var drhj = parseFloat(0.0);
+           var drrg = parseFloat(0.0);
+           var drcl = parseFloat(0.0);
+           var drjx =parseFloat(0.0);
+           var drzc = parseFloat(0.0);
+           var cshj = parseFloat(0.0);
+           var csrg = parseFloat(0.0);
+           var cscl =parseFloat(0.0);
+           var csjx = parseFloat(0.0);
+		  for(var i=0;i<mxjcs.length;i++){
+			tb +="<tr style='width: 100%;  table-layout:fixed;'>";
+			tb +="<td  style='width: 60px;'>"+(i+1)+"</td>";
+			tb +="<td  style='width: 120px;'><a onclick='lookDetail(\""+mxjcs[i].budget_no+"\",\""+mxjcs[i].project_id+"\",\""+mxjcs[i].project_sub_id+"\")'>"+mxjcs[i].budget_name+"</a></td>";
+			tb +="<td style='width:90px;'>"+toDecimal(mxjcs[i].drhj)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].drrg)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].drcl)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].drjx)+"</td>";
+			tb +="<td style='width: 90px'>"+toDecimal(mxjcs[i].drzc)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].cshj)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].csrg)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].cscl)+"</td>";
+			tb +="<td style='width: 90px;'>"+toDecimal(mxjcs[i].csjx)+"</td>";
+			tb +="</tr>";
+			drhj =parseFloat(drhj) + parseFloat(toDecimal(mxjcs[i].drhj));
+	         drrg =parseFloat(drrg) + parseFloat(toDecimal(mxjcs[i].drrg));
+	         drcl =parseFloat(drcl) + parseFloat(toDecimal(mxjcs[i].drcl));
+	         drjx =parseFloat(drjx) + parseFloat(toDecimal(mxjcs[i].drjx));
+	         drzc =parseFloat(drzc) + parseFloat(toDecimal(mxjcs[i].drzc));
+	         cshj =parseFloat(cshj) + parseFloat(toDecimal(mxjcs[i].cshj));
+	         csrg =parseFloat(csrg) + parseFloat(toDecimal(mxjcs[i].csrg));
+	         cscl =parseFloat(cscl) + parseFloat(toDecimal(mxjcs[i].cscl));
+	         csjx =parseFloat(csjx) + parseFloat(toDecimal(mxjcs[i].csjx));
+		  }
+		  var hjtb= "";
+		  hjtb +="<tr >";
+		  hjtb +="<td colspan='2'>合计</td>";
+		  hjtb +="<td >"+toDecimal(drhj)+"</td>";
+		  hjtb +="<td >"+toDecimal(drrg)+"</td>";
+		  hjtb +="<td >"+toDecimal(drcl)+"</td>";
+		  hjtb +="<td >"+toDecimal(drjx)+"</td>";
+		  hjtb +="<td >"+toDecimal(drzc)+"</td>";
+		  hjtb +="<td >"+toDecimal(cshj)+"</td>";
+		  hjtb +="<td >"+toDecimal(csrg)+"</td>";
+			hjtb +="<td >"+toDecimal(cscl)+"</td>";
+			hjtb +="<td >"+toDecimal(csjx)+"</td>";
+			hjtb +="</tr>";
+		  $("#hjtbs").append(hjtb);
+	      $("#tbs").append(tb);
+		  
+		  
+          
+        }); 
+    }
+    function toDecimal(x) {  
+        if(!x){
+			return "0";
+           } 
+    	  var f = parseFloat(x);    
+    	if (isNaN(f)) {   
+    	  return;    
+    	}          
+    	f = Math.round(x*100)/100;  
+    	return f;        
+    	}  
+    function jsonYearMonthDay(milliseconds) {
+		if(milliseconds==null || milliseconds=="undefined"){
+			return "";
+		}
+		var datetime = new Date();
+		datetime.setTime(milliseconds);
+		var year = datetime.getFullYear();
+		var month = datetime.getMonth() + 1 < 10 ? "0"
+				+ (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+		var date = datetime.getDate() < 10 ? "0" + datetime.getDate()
+				: datetime.getDate();
+		return year + "." + month + "." + date;
+
+	}
+
+	function qcnull(value){
+		if(!value){
+			return "";
+		}else{
+			return value;
+		}
+	}
+    function lookDetail(budget_no,project_id,project_sub_id){
+    	modals.openWin({
+            winId:"rz",
+            title:'明细',
+            width:$(document).width()*0.8 + 'px',
+            url:basePath+"/budgetCount/detail?budgetNo="+budget_no,
+            hideFunc:function(){
+            }
+           }); 
+    }
+</script>

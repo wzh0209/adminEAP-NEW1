@@ -1,0 +1,481 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        <li class="fa fa-remove"></li>
+    </button>
+    <h5 class="modal-title">员工信息</h5>
+</div>
+
+<div class="modal-body"  style="max-height:500px;overflow-y:auto;">
+
+    <form id="user-form" name="user-form" class="form-horizontal">
+    <div class="box-footer text-center" >
+            <!--以下两种方式提交验证,根据所需选择-->
+             <button type="submit" class="btn btn-primary" data-btn-type="save">提交</button>
+            <button type="button" class="btn btn-default" data-btn-type="cancel" data-dismiss="modal">取消</button>
+        </div>
+        <!-- /.box-footer -->
+        <input type="hidden" name="id">
+        <div class="box-body">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">姓名</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="姓名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birthday" class="col-sm-3 control-label">出生日期</label>
+                    <div class="input-group col-sm-8">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                        <input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd"
+                            name="birthday" id="birthday" placeholder="出生日期">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="deptName" class="col-sm-3 control-label">部门</label>
+
+                    <div class="col-sm-6">
+                        <input type="hidden" name="deptId" id="deptId">
+                        <input type="text" class="form-control" id="deptName" name="deptName" placeholder="所在部门"
+                            oninput="getJobs()">
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-info" data-flag="org"><i class="fa fa-sitemap"></i>&nbsp;选择
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="telphone" class="col-sm-3 control-label">座机</label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="telphone" name="telphone" placeholder="座机">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="identificationNumber" class="col-sm-3 control-label">身份证号</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="identificationNumber" name="identificationNumber"
+                            placeholder="身份证号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bloodType" class="col-sm-3 control-label">血型</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="bloodType" name="bloodType" placeholder="血型">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">学历</label>
+                    <div class="col-sm-8">
+                        <select id="education" class="form-control select2" name="education" style="width:100%">
+                            <option selected="selected" value="">选择一个学历</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="school" class="col-sm-3 control-label">毕业学院</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="school" name="school" placeholder="毕业学院">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="emergencyContact" class="col-sm-3 control-label">紧急联系人</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="emergencyContact" name="emergencyContact"
+                            placeholder="紧急联系人">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="workType" class="col-sm-3 control-label">工种</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="workType" name="workType" placeholder="工种">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="col-sm-3 control-label">年龄</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="age" name="age" placeholder="年龄">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="jobNumber" class="col-sm-3 control-label">工号</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="jobNumber" name="jobNumber" placeholder="工号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bankCount" class="col-sm-3 control-label">银行账户</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="bankCount" name="bankCount" placeholder="银行账户">
+                    </div>
+                </div>
+                <div class="form-group">
+                     <label for="deptent" class="col-sm-3 control-label">所属分部</label>
+                     <div class="col-sm-8">
+                         <select id="deptent" name="deptent"  class="form-control"></select>
+                     </div>
+                 </div>
+                 <div class="form-group">
+                     <label for="auditdept" class="col-sm-3 control-label">审核部门</label>
+                     <div class="col-sm-8">
+                         <select id="auditdept" name="auditdept"  class="form-control"></select>
+                     </div>
+                 </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">性别</label>
+
+                    <div class="col-sm-8">
+                        <label class="control-label">
+                            <input type="radio" name="sex" data-flag="icheck" class="square-green" value="1"> 男
+                        </label> &nbsp;
+                        <label class="control-label">
+                            <input type="radio" name="sex" data-flag="icheck" class="square-green" value="0"> 女
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loginName" class="col-sm-3 control-label">登录名</label>
+
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="loginName" name="loginName" placeholder="登录名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="jobId" class="col-sm-3 control-label">职务</label>
+                    <div class="col-sm-8">
+                        <select type="text" class="form-control" id="job" name="jobId" placeholder="职务">
+                            <option selected="selected" value="">选择一个职务</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mobile" class="col-sm-3 control-label">手机</label>
+
+                    <div class="col-sm-8">
+                        <!--<input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机"
+                                                           data-inputmask='"mask": "9999999999999"' data-mask>-->
+                        <input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="qq" class="col-sm-3 control-label">QQ</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="qq" name="qq" placeholder="QQ">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">民族</label>
+                    <div class="col-sm-8">
+                        <select id="ethnic" class="form-control select2" name="ethnic" style="width:100%">
+                            <option selected="selected" value="">选择一个民族</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="political" class="col-sm-3 control-label">政治面貌</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="political" name="political" placeholder="政治面貌">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">家庭住址</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="address" name="address" placeholder="家庭住址">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="professional" class="col-sm-3 control-label">专业</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="professional" name="professional" placeholder="专业">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="emergencyContactPhone" class="col-sm-3 control-label">紧急联系人电话</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="emergencyContactPhone" name="emergencyContactPhone"
+                            placeholder="紧急联系人电话">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="basicSalary" class="col-sm-3 control-label">基本工资</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="basicSalary" name="basicSalary" placeholder="基本工资">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="hireDate" class="col-sm-3 control-label">入职时间</label>
+                    <div class="input-group col-sm-8">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                        <input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd"
+                            name="hireDate" id="hireDate" placeholder="入职时间">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="someTitle" class="col-sm-3 control-label">职称</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="someTitle" name="someTitle" placeholder="职称">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="deduction" class="col-sm-3 control-label">个税抵扣项（元）</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="deduction" name="deduction"
+                            onkeyup="value=value.replace(/[^\d.]/g,'')" placeholder="个税抵扣项（元）">
+                    </div>
+                </div>
+                <div class="form-group">
+                                <label for="regionCode" class="col-sm-3 control-label">参保地区：</label>
+                                <div class="col-sm-8">
+                                    <select id="regionCode" name="regionCode"  class="form-control select2">
+                                    	<option selected="selected" value="">无参保</option>
+                                    </select>
+                                </div>
+                            </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="dutyContent" class="col-sm-2 control-label">职责描述</label>
+
+            <div class="col-sm-9">
+                <textarea class="form-control" id="dutyContent" name="dutyContent" placeholder="职责描述"
+                    rows="5"></textarea>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </form>
+
+</div>
+<script>
+    //tableId,queryId,conditionContainer
+    var form = null;
+    var id = "${id?default(0)}";
+
+    var eduOptions = '${eduOptions?default(0)}', edOptions = 0;
+    if (eduOptions != 0) {
+        edOptions = JSON.parse(eduOptions);
+    }
+
+    var ethOptions = '${ethOptions?default(0)}', etOptions = 0;
+    if (ethOptions != 0) {
+        etOptions = JSON.parse(ethOptions);
+    }
+    var regionCodes = '${regionCodes?default(0)}',regions=0;
+    if(regionCodes != 0){
+    	regions = JSON.parse(regionCodes);
+    }
+
+    $(function () {
+    	//填充公司分部
+        ajaxPost(basePath+"/deptent/all",{},function(data){
+                var op = "";
+				for(var i=0;i<data.length;i++){
+					op+="<option value='"+data[i].id+"'>"+data[i].name+"</option>"
+				}
+                $("#deptent").append(op);
+            })
+         //填充审核部分
+         ajaxPost(basePath+"/employeeQuery/getAuditDepts",{},function(data){
+                var op = "";
+                var res = data.data;
+				for(var i=0;i<res.length;i++){
+					op+="<option value='"+res[i].value+"'>"+res[i].data+"("+res[i].pdata+")</option>"
+				}
+                $("#auditdept").append(op);
+            })
+        //初始化控件
+        form = $("#user-form").form({ baseEntity: false });
+        //数据校验
+        $("#user-form").bootstrapValidator({
+            message: '请输入有效值',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function (validator, userform, submitButton) {
+                modals.confirm('确认保存？', function () {
+                    //Save Data，对应'submit-提交'
+                    var params = form.getFormSimpleData();
+                    ajaxPost(basePath + '/employeeQuery/save', params, function (data, status) {
+                        if (data.success) {
+                            if (id != "0") {//更新
+                                modals.hideWin(winId);
+                                userTable.reloadRowData(id);
+                            } else {//新增
+                                //modals.info("数据保存成功");
+                                modals.hideWin(winId);
+                                userTable.reloadData();
+                            }
+                        }
+                    });
+                });
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入姓名'
+                        }
+                    }
+                },
+                sex: {
+                    validators: {
+                        notEmpty: {
+                            message: '请选择性别'
+                        }
+                    }
+                },
+                birthday: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入出生日期'
+                        },
+                        date: {
+                            format: $(this).data("format"),
+                            message: '请输入有效日期'
+                        }
+                    }
+                },
+                loginName: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入登录名'
+                        }
+                    }
+                },
+                jobId: {
+                    validators: {
+                        notEmpty: {
+                            message: '请选择职务'
+                        }
+                    }
+                },
+                email: {
+                    validators: {
+                        notEmpty: {
+                            message: '请输入邮件',
+                        },
+                        emailAddress: {
+                            message: '非法的邮件格式',
+                        }
+
+                    }
+                },
+                mobile: {
+                    validators: {
+                        notEmpty: {
+                            message: '手机号不能为空'
+                        },
+                        regexp: {
+                            regexp: /^1\d{10}$/,
+                            message: '手机号格式错误'
+                        }
+                    }
+                },
+                identificationNumber: {
+                    validators: {
+                        notEmpty: {
+                            message: '身份证号码不能为空'
+                        },
+                        callback: {
+                            message: '身份证号码格式错误',
+                            callback: function (value, validator) {
+                                if (!value) {
+                                    return true
+                                } else if (isCardNo(value)) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                },
+                deptent: {
+                    validators: {
+                        notEmpty: {
+                            message: '请选择所属分部'
+                        }
+                    }
+                }
+            }
+        });
+        form.initComponent();
+        //初始化部门选择器
+        $("button[data-flag='org']").org({
+            idField: $("#deptId"),
+            nameField: $("#deptName"),
+            title: '选择部门',
+            levels: 3
+
+        })
+        ajaxPost(basePath + "/employeeQuery/getRylx", null, function (data) {
+            if (data.data) {
+                var list = data.data;
+                var option = "<option></option>";
+                for (var i = 0; i < list.length; i++) {
+
+                    option += "<option value='" + list[i].id + "'>"
+                        + list[i].name
+                        + "</option>";
+                }
+                $("#job").append(option);
+            }
+        })
+
+        if (edOptions != 0) {
+            for (var i = 0, len = edOptions.length; i < len; i++) {
+                var option = edOptions[i];
+                $('#education').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $("#education").select2();
+        }
+
+        if (etOptions != 0) {
+            for (var i = 0, len = etOptions.length; i < len; i++) {
+                var option = etOptions[i];
+                $('#ethnic').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $("#ethnic").select2();
+        }
+        if(regions != 0){
+            for (var i = 0, len = regions.length; i < len; i++) {
+                var option = regions[i];
+                $('#regionCode').append("<option value=\"" + option.value + "\">" + option.name + "</option>");
+            }
+            $("#regionCode").select2();
+        }
+
+        //回填id      
+        if (id != "0") {
+            ajaxPost(basePath + "/employeeQuery/get", { id: id }, function (data) {
+                form.initFormData(data);
+            });
+        }
+    });
+    function isCardNo(card) {
+        let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if (reg.test(card) === false) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function resetForm() {
+        form.clearForm();
+        $("#user-form").data('bootstrapValidator').resetForm();
+    }
+</script>

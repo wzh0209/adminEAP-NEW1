@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="${basePath}/resources/common/libs/fileinput/css/fileinput.min.css">
+<style>
+
+#projectaddstep2 .krajee-default.file-preview-frame .kv-file-content {
+    height: auto;
+}
+
+#projectaddstep2 .krajee-default .file-footer-caption {
+    width: 100px;
+}
+
+</style>
+<script src="${basePath}/resources/common/libs/fileinput/js/fileinput.js"></script>
+<script src="${basePath}/resources/common/libs/fileinput/js/locales/zh.js"></script>
+<!--BaseFile组件-->
+<script src="${basePath}/resources/common/js/base-file.js"></script>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><li class="fa fa-remove"></li></button>
+    <h5 class="modal-title"></h5>
+</div>
+<div class="modal-body" style="max-height:700px;overflow-y:auto;">
+	<span id="msg" style="color: red"></span>
+    <form id="dy-form" name="dy-form" class="form-horizontal">
+       <div class="box-body">
+			<div class="form-group">
+                     <label class="col-sm-3 control-label">价格</label>
+                     <div class="col-sm-9">
+                         <input class="form-control " id="newPrice"name="newPrice" value="0" >
+                     </div>
+                 </div>        
+        </div>
+      </form>
+       <div class="" style="text-align: center;">
+      	<button type="button" class="btn btn-success" id="doEdit">修改</button>
+      </div>
+</div>
+<script>
+    var cgxqid="${cgxqid?default(0)}";
+    $(function() {
+        //初始化控件
+       	$("#doEdit").on("click",function(){
+           	var newPrice = $("#newPrice").val();
+           if(!newPrice){
+           		modals.info("请输入采购价格");
+           		return ;
+             } 
+           ajaxPost(basePath+"/instock/editPrice",{cgxqid:cgxqid,newPrice:$("#newPrice").val()},function(data){
+               if(data.success){
+            	   modals.hideWin("editPay");
+               }else{
+                   modals.error("系统繁忙，请稍后重试");
+               }
+           });
+        })
+        
+    });
+	
+</script>

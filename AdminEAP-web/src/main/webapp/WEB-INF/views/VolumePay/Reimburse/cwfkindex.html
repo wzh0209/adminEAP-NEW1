@@ -1,0 +1,149 @@
+<section class="content-header">
+    <h1>
+       	报销财务付款
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">财务账目管理</a></li>
+        <li class="active">报销财务付款</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv" >
+                <input placeholder="金额" name="bx.money" class="form-control" type="search" likeOption="true"operator="like" />
+                	<select class="form-control select2" name="bx.type" style="width:200px;" operator="eq">
+                    	<option selected="selected" value="">选择一个类型</option>
+                    	<option value="10" >公司报销</option>
+                        <option value="20">项目报销</option>
+                    </select>
+                    <select id="projectId" class="form-control select2" name="bx.proid" style="width:200px;" operator="eq">
+                    	<option selected="selected" value="">选择一个项目</option>
+                    </select>
+                	<input placeholder="请输入日期" name="bx.bxdate" class="form-control date-picker" data-flag="datepicker" data-format="yyyy-mm-dd"  type="search" operator="eq" />
+                    <input placeholder="请输入报销编号" name="bx.number" class="form-control" type="search" likeOption="true"operator="like" />
+                    <input placeholder="请输入申请人姓名" name="bx.reername" class="form-control" type="search" likeOption="true"operator="like" />
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                       <button type="button" class="btn btn-success" data-btn-type="printBxd"id = "">打印报销单</button>
+                    </div>
+                    <div class="btn-group">
+                    
+                     
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="volume_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var volumeTable, winId = "volumeWin";
+    var projects = '${projects?default(0)}',options=0;
+    if(projects != 0){
+    	options = JSON.parse(projects);
+    }
+    
+    var volumeManageObject = {
+            submit: function (id) {
+            	modals.openWin({
+                    winId:winId,
+                    title:'查看',
+                    width:'1000px',
+                    url:basePath+"/reimburse/cwlook?id="+id,
+                    hideFunc:function(){
+                    	volumeTable.reloadData();
+                    }
+                    
+                   });
+            },
+            look:function(id){
+            	modals.openWin({
+                    winId:winId,
+                    title:'查看',
+                    width:'1000px',
+                    url:basePath+"/reimburse/cwlook?lx=look&id="+id,
+                    hideFunc:function(){
+                    	volumeTable.reloadData();
+                    }
+                    
+                   });
+           },
+           jz:function(id){
+        	   ajaxPost(basePath+'/reimburse/dojz', {id:id}, function(data) {
+                   if(data.success){
+                   	volumeTable.reloadData();
+                       modals.info("记账成功");
+                       
+                   }                
+               }); 
+           }
+    }
+    
+    $(function (){
+    	volumeTable = new CommonTable("volume_table", "reimburse_cw", "searchDiv", null);   
+    	 $("button[data-btn-type]").click(function () {
+             var action = $(this).data("btn-type");
+             var rowId = volumeTable.getSelectedRowId();
+             switch (action) {
+             case "printBxd":
+             	 if(!rowId){
+ 	                    modals.info('请选择要打印的行');
+ 	                    return false;
+ 	                }
+             	 modals.openWin({
+                     winId:"printBx",
+                     title:'支付单附件数确认',
+                     width:'500px',
+                     url:basePath+"/reimburse/fjsl?id="+rowId
+                 });
+                 break;       		
+             }
+         }); 
+    	 if(options != 0){
+             for (var i = 0, len = options.length; i < len; i++) {
+                 var option = options[i];
+                 $('#projectId').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+             }
+             $("#projectId").select2();
+         }
+    });
+    
+    function fnRenderXQ(value, type, rowObj){
+    	var oper ="";
+    	if(rowObj.status=="财务付款"){
+    		oper += "<a href='javascript:void(0)' onclick='volumeManageObject.submit(\"" + value + "\")'>查看付款</a>";
+       	}else if(rowObj.status=="完成"){
+       		oper += "<a href='javascript:void(0)' onclick='volumeManageObject.look(\"" + value + "\")'>查看</a>";
+       		oper += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='printzfd(\"" + value + "\")'>补打支付单</a>";
+       		if(rowObj.isjz=="0"){
+       			oper += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='volumeManageObject.jz(\"" + value + "\")'>记账</a>";
+           	}
+        }
+    	
+        return oper;
+    }
+    function printzfd(id){
+    	modals.openWin({
+            winId:"printzf",
+            title:'支付单支付方式确认',
+            width:'500px',
+            url:basePath+"/reimburse/zffs?id="+id
+        });
+    }
+
+    function lookyy(value){
+    	modals.info(value);
+    }
+   
+</script>

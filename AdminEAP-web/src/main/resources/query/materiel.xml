@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+
+	<!-- 物料表-->
+	<query id="materiel_list" key="id" tableName="物料列表" widthType="px" >
+		<!-- <column key="parent_ID" header="父节点id" width="50" allowSort="false" hidden="true"/>
+		<column key="mat_number" header="物料编号" operator="like" width="100"/>
+		<column key="mat_name" header="物料名称" operator="like" width="100"/>
+		<column key="mat_standard" header="物料规格" operator="eq" width="100"/>
+		<column key="unit" header="单位" operator="eq" width="100" allowSort="true" />
+		<column key="create_name" header="创建人" align="left" width="100"  operator="like"/>
+		<column key="create_time" header="创建时间"  classType="java.util.Date" operator="between" width="150" dateFormat="yyyy-mm-dd"/>
+		 -->
+		<sql>
+            <![CDATA[
+              SELECT m.id id,m.parent_ID parent_ID, m.mat_number mat_number ,m.mat_name mat_name , 
+              m.mat_standard mat_standard ,m.unit unit ,m.create_name create_name ,m.create_time create_time ,
+               (select count(1) from tbl_channel c where c.mat_ID = m.mat_number and c.isValid = '1') sl FROM tbl_materiel m 
+              WHERE 1=1
+            ]]>
+        </sql>
+		<column key="parent_ID" header="父节点id" width="50" allowSort="false" hidden="true"/>
+		<column key="mat_number" header="物料编号" operator="like" width="100"/>
+		<column key="mat_name" header="物料名称" operator="like" width="100"/>
+		<column key="mat_standard" header="物料规格" operator="eq" width="100"/>
+		<column key="unit" header="单位" operator="eq" width="100" allowSort="true" />
+		<column key="sl" header="供应商数量" width="100"/>
+		<column key="create_name" header="创建人" align="left" width="100"  operator="like"/>
+		<column key="create_time" header="创建时间"   operator="between" width="150" />
+	</query>
+	
+	<!-- 物料历史采购表-->
+	<query id="materiel_his_list" key="id" tableName="历史采购列表" className="com.radish.master.entity.PurchaseHistory"
+		   pageSize="10"  widthType="px" order="id asc">
+		<column key="mat_ID" header="所属物料内码" width="50"  hidden="true"/>
+		<column key="project_ID" header="所属项目ID" width="50"  hidden="true"/>
+		<column key="purchase_name_ID" header="采购人员ID" width="50" hidden="true"/>
+		<column key="mat_name" header="物料名称" operator="like" width="100"/>
+		<column key="supplier" header="供应商" operator="like" width="100"/>
+		<column key="price" header="单价" operator="eq" width="100"/>
+		<column key="purchase_time" header="采购时间" classType="java.util.Date" operator="between" width="150" dateFormat="yyyy-mm-dd" allowSort="true"/>
+		<column key="project_name" header="所属项目" operator="like" width="150"  />
+		<column key="purchase_name" header="采购人员" align="left" width="100"  operator="like"/>
+	</query>
+
+	<!-- 采购渠道-->
+	<query id="channel_list" key="id" tableName="物料渠道表" className="com.radish.master.entity.Channel" widthType="px">
+		<column key="rowIndex" header="序号" width="80"/>
+		<!--<column key="id" header="ID" classType="String" allowSort="true" width="150" hidden="true"/>-->
+		<column key="supplier" header="供应商" classType="String" allowSort="true" width="150"/>
+		<column key="area" header="供应商所在地" classType="String" width="150"/>
+		<column key="price" header="单价" classType="String" allowSort="true" width="150"/>
+	</query>
+	
+	<!-- 物料表-->
+	<query id="materiel_channel_list" key="id" tableName="物料-渠道列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT m.id id,m.parent_ID parent_ID, m.mat_number mat_number ,m.mat_name mat_name , 
+              m.mat_standard mat_standard ,m.unit unit ,m.create_name create_name ,m.create_time create_time ,
+               (select count(1) from tbl_channel c where c.mat_ID = m.mat_number and c.isValid = '1') sl FROM tbl_materiel m 
+              WHERE 1=1
+            ]]>
+        </sql>
+		<column key="parent_ID" header="父节点id" width="50" allowSort="false" hidden="true"/>
+		<column key="mat_number" header="物料编号" operator="like" width="100"/>
+		<column key="mat_name" header="物料名称" operator="like" width="100"/>
+		<column key="mat_standard" header="物料规格" operator="eq" width="100"/>
+		<column key="unit" header="单位" operator="eq" width="100" allowSort="true" />
+		<column key="sl" header="供应商数量" width="100"/>
+		<column key="create_name" header="创建人" align="left" width="100"  operator="like"/>
+		<column key="create_time" header="创建时间"   operator="between" width="150" />
+	</query>
+</queryContext>

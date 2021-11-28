@@ -1,0 +1,103 @@
+<section class="content-header">
+    <h1>
+        施工日志管理
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">施工日志</a></li>
+        <li class="active">施工日志管理</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv1" style="display: none">
+                    <!--查询条件-->
+                    <!--查询条件-->
+                    <input type="search" name="u.id" class="form-control" id="useid" operator="like" likeOption="true" style="display: none">
+                    <select type="search" placeholder="请选择所属项目" title="所属项目" name="p.id" class="form-control select2" id="xm" operator="like" likeOption="true"  style =" width:20%">
+                  		<option selected="selected" value="">选择所属项目</option>
+                    </select>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" data-btn-type="detail">查看</button>
+                         <button type="button" class="btn btn-default" data-btn-type="edit" >编辑</button>
+                        <button type="button" class="btn btn-default" data-btn-type="delete">删除</button>
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="lwContract_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+           </div>
+         </div>
+         
+</section>
+
+<script>
+    var form = $("#searchDiv1").form({baseEntity: false}), initData={};
+    
+    var xms = '${xm?default(0)}',xm=0;
+    if(xms != 0){
+    	xm = JSON.parse(xms);
+    }
+	var useid =  '${useid?default(0)}';
+    var dutycheckTable, winId = "projectQueryWin";
+    $(function (){
+    	$("#useid").val(useid);
+    	dutycheckTable = new CommonTable("lwContract_table", "builddiary_list", "searchDiv1");
+        //绑定按钮事件
+        $("button[data-btn-type]").click(function () {
+            var action = $(this).data("btn-type");
+            var rowId = dutycheckTable.getSelectedRowId();
+            switch (action) {
+                case "detail":
+                	if(!rowId){
+                        modals.info('请选择要查看的行');
+                        return false;
+                    }
+                	
+                	loadPage(basePath+"/builddiary/edit?id=" +rowId+"&doWhat=1");
+                    break;
+                case "edit":
+                	if(!rowId){
+                        modals.info('请选择要编辑的行');
+                        return false;
+                    }
+                	loadPage(basePath+"/builddiary/edit?id=" +rowId+"&doWhat=2");
+                	break;
+                case "delete":
+                	if(!rowId){
+                        modals.info('请选择要删除的行');
+                        return false;
+                    }
+                    modals.confirm("是否要删除该行数据？",function(){
+                        ajaxPost(basePath+"/builddiary/delete?id="+rowId,null,function(data){
+                        	if(data.success){
+                        		dutycheckTable.reloadData();
+                        	}
+                        	
+                  
+                        });
+                    })
+                	break;
+               
+            }
+        });
+        if(xm != 0){
+            for (var i = 0,len = xm.length; i < len; i++) {
+                var x = xm[i];
+                $('#xm').append("<option value='" + x.value + "'>" + x.data + "</option>");
+            }
+            $(".select2").select2();
+        }
+    });
+</script>

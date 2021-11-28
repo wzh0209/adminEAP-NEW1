@@ -1,0 +1,206 @@
+<script src="${basePath}/resources/cinder/editor/dataTables.editor.min.js"></script>
+<script src="${basePath}/resources/common/js/calculate.js"></script>
+<link rel="stylesheet" href="${basePath}/resources/cinder/editor/dataTables.editor.css">
+<link rel="stylesheet" href="${basePath}/resources/cinder/editor/editor.dataTables.min.css">
+<style>
+.fixed-button-area{position:fixed;z-index:1;left:45%;}
+.DTE_Field_InputControl{color:black;}
+</style>
+<section class="content-header">
+    <h1>
+        <span>班组工资单</span>
+        <small>新增</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">劳务管理</a></li>
+        <li class="active">新增班组工资单</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <span>
+                        <i class="fa fa-files-o">本次可申报工资总额:<font color="red" size="6"><span id="aTotal"></span>元</font></i>
+                    </span>
+                </div>
+                <div id="stepbar" class="add stepbar">
+                    <div>
+                        <div class="step">
+                            <span class="tip">1</span>
+                        </div>
+                        <div class="stepinfo">添加工资单条目</div>
+                    </div>
+                    <div>
+                        <div class="step step">
+                            <span class="tip">2</span>
+                        </div>
+                        <div class="stepinfo">编辑工资单明细</div>
+                    </div>
+                    <div>
+                        <div class="step stepundone">
+                            <span class="tip">3</span>
+                        </div>
+                        <div class="stepinfo undoneinfo">完成</div>
+                    </div>
+                </div>
+                <div class="dataTables_filter" id="searchDiv" style="display:none;">
+                   <input type="search" name="salaryID" id="salaryID" class="form-control" operator="eq" style="display:none;">
+                   <div class="btn-group" style="width:600px;">
+                       <button type="button" class="btn btn-info ml10" data-btn-type="prev" style="float:right">返回列表</button>
+                       <div class="col-sm-6 mr10" style="float:right;width:180px;">
+                           <select id="pointTeamID" class="form-control select2" style="width:180px;">
+                                   <option selected="selected" value="">选择一个点工班组</option>
+                           </select>
+                       </div>
+                       <label class="col-sm-3 control-label" style="float:right;width:100px;line-height:40px;">更换为点工班组<span style="color:red">*</span></label>
+                   </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <!-- 内容 -->
+                    <table id="salary_detail_table" class="table table-bordered table-striped table-hover">
+                        <tfoot>
+                            <tr>
+                                <th colspan="11" style="text-align:right">合计:</th>
+                                <th class="text-left">0</th>
+                                <th class="text-left"></th>
+                                <th class="text-left"></th>
+                                <th class="text-left"></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    var form;
+    var id = "${id}", total = "${total}", changedTeamID = "${changedTeamID}";
+    $('#salaryID').val(id);
+    $('#salaryID',$('#searchDiv')).val(id);
+    $('#total').val(total);
+    $('#aTotal').html(total);
+    $('#pointTeamID').val(changedTeamID).trigger("change");
+    var teamOptions = '${pointTeams?default(0)}',options=0;
+    if(teamOptions != 0){
+        options = JSON.parse(teamOptions);
+    }
+    var salaryDetailTable, winId = "salaryDetailWin";
+    var salaryDetailCtrl = {
+        initButtonEvent: function () {
+            $("button[data-btn-type='prev']").click(function () {
+                loadPage(basePath+"/project/team/salary/list");
+            });
+        },
+        deleteDetail: function (rowId) {
+            modals.confirm("是否要删除该行数据？",function(){
+                ajaxPost(basePath+"/project/team/salary/deletedetail/"+rowId,null,function(data){
+                    if(data.success){
+                    	salaryDetailTable.reloadRowData();
+                    }else{
+                        modals.error("删除失败！");
+                    }
+                });
+            })
+        },
+        attendanceDetail: function (name){
+            modals.openWin({
+                winId:winId,
+                title:'考勤详情',
+                width:'1000px',
+                url:basePath+"/attendance/detail/" + name
+               });
+        },
+        initSalaryEditor:function(){
+            salaryEditor = new $.fn.dataTable.Editor( {
+                ajax: basePath+"/project/team/salary/rowedit",
+                table: "#salary_detail_table",
+                idSrc:  'id',
+                fields: [ 
+                    {label:"attendance:", name:"attendance",type:"text"},
+                    {label:"loan:", name:"loan",type:"text"},
+                    {label:"payable:", name:"payable",type:"text"},
+                    /* {label:"medical:", name:"medical",type:"text"},
+                    {label:"social:", name:"social",type:"text"}, */
+                    {label:"tax:", name:"tax",type:"text"},
+                    {label:"actual:", name:"actual",type:"text"}
+                ]
+            } );
+            
+            $('#salary_detail_table').on( 'click', 'tbody td:not(:first-child)', function (e) {
+                salaryEditor.inline( this, {
+                    onBlur: 'submit'
+                });
+            } );
+        }
+    }
+    $(function () {
+    	salaryDetailTable = new CommonTable("salary_detail_table", "team_salary_detail", "searchDiv", {
+            "footerCallback": function ( row, data, start, end, display ) {
+                var api = this.api(), data;
+                // Remove the formatting to get integer data for summation
+                var intVal = function ( i ) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '')*1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+     
+                // Total over this page
+                unitTotal = api
+                    .column( 11, { page: 'current'} )
+                    .data()
+                    .reduce( function (a, b) {
+                        return accAddition(intVal(a), intVal(b));
+                    }, 0 );
+                // Update footer
+                $( api.column( 11 ).footer() ).html(
+                    '￥'+unitTotal
+                );
+            }
+        });
+    	
+    	if(options != 0){
+            for (var i = 0, len = options.length; i < len; i++) {
+                var option = options[i];
+                $('#pointTeamID').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $(".select2").select2();
+            $("#pointTeamID").bind("change", function () {
+                var value = $(this).val();
+                if (value === "") {
+                    return false;
+                }
+                
+                var name = "";
+                if ($("#pointTeamID").prop('selectedIndex') > 0) {
+                    name = $("#pointTeamID").find("option:selected").text();
+                }
+                
+                modals.confirm("是否更换人员，更换后不可撤消？",function(){
+                    ajaxPost(basePath+"/project/team/salary/changebanzu",{salaryID:id,teamID:value,teamName:name},function(data){
+                        if(data.success){
+                            salaryDetailTable.reloadRowData();
+                        }else{
+                            modals.error("删除失败！");
+                        }
+                    });
+                })
+                
+            });
+        }
+    	
+        salaryDetailCtrl.initButtonEvent();
+        salaryDetailCtrl.initSalaryEditor();
+    });
+    
+    function fnRenderSalaryDetail(value, type, rowObj){
+    	var oper = "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='salaryDetailCtrl.attendanceDetail(\"" + rowObj.name + "\")'>查看考勤</a>";
+        oper += "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='salaryDetailCtrl.deleteDetail(\"" + value + "\")'>删除</a>";
+        return oper;
+    }
+
+</script>

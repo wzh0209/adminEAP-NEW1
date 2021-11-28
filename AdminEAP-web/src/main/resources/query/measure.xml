@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+    
+    <query id="measure_list" key="id" tableName="班组工资明细" className="com.radish.master.entity.project.Measure" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="name" header="名称" allowSort="true" width="150"/>
+        <column key="projectName" header="所属项目" allowSort="true" width="150"/>
+        <column key="projectSubName" header="所属子项" width="150"/>
+        <column key="construct" header="安全文明施工费" width="150"/>
+        <column key="issue" header="总价措施项目费" width="150"/>
+        <column key="manage" header="管理费" width="150"/>
+        <column key="rule" header="规费" width="80"/>
+        <column key="tax" header="税金" width="80"/>
+        <column key="status" header="状态" width="80" render="10=新建,20=审核中,30=审核通过"/>
+        <column key="id" header="操作" width="80" fnRender="fnRenderDetail"/>
+    </query>
+    
+    <query id="measure_consume_list" key="id" tableName="已配置工程单" widthType="px" pageSize="200">
+        <sql>
+            <![CDATA[
+                SELECT * FROM 
+                (SELECT budget.id,budget.type,budget.project_id,budget.project_name,budget.project_sub_name,budget.budget,consume.consume,'Percent' AS percent,'construct' AS feetype FROM
+                (SELECT project_sub_id AS id,'安全文明施工费' AS type,project_name,project_id,project_sub_name,project_sub_id,SUM(construct) budget FROM tbl_measure WHERE `status` = '30' GROUP BY project_sub_id) budget,
+                (SELECT SUM(amount) consume,project_sub_id FROM tbl_measure_consume WHERE op='-' AND type like 'construct%' GROUP BY project_sub_id) consume
+                WHERE budget.project_sub_id = consume.project_sub_id
+                UNION ALL
+                SELECT budget.id,budget.type,budget.project_id,budget.project_name,budget.project_sub_name,budget.budget,consume.consume,'Percent' AS percent,'issue' AS feetype FROM
+                (SELECT project_sub_id AS id,'总价措施项目费' AS type,project_name,project_id,project_sub_name,project_sub_id,SUM(issue) budget FROM tbl_measure WHERE `status` = '30' GROUP BY project_sub_id) budget,
+                (SELECT SUM(amount) consume,project_sub_id FROM tbl_measure_consume WHERE op='-' AND type='issue' GROUP BY project_sub_id) consume
+                WHERE budget.project_sub_id = consume.project_sub_id
+                UNION ALL
+                SELECT budget.id,budget.type,budget.project_id,budget.project_name,budget.project_sub_name,budget.budget,consume.consume,'Percent' AS percent,'manage' AS feetype FROM
+                (SELECT project_sub_id AS id,'管理费' AS type,project_name,project_id,project_sub_name,project_sub_id,SUM(manage) budget FROM tbl_measure WHERE `status` = '30' GROUP BY project_sub_id) budget,
+                (SELECT SUM(amount) consume,project_sub_id FROM tbl_measure_consume WHERE op='-' AND type='manage' GROUP BY project_sub_id) consume
+                WHERE budget.project_sub_id = consume.project_sub_id
+                UNION ALL
+                SELECT budget.id,budget.type,budget.project_id,budget.project_name,budget.project_sub_name,budget.budget,consume.consume,'Percent' AS percent,'rule' AS feetype FROM
+                (SELECT project_sub_id AS id,'规费' AS type,project_name,project_id,project_sub_name,project_sub_id,SUM(rule) budget FROM tbl_measure WHERE `status` = '30' GROUP BY project_sub_id) budget,
+                (SELECT SUM(amount) consume,project_sub_id FROM tbl_measure_consume WHERE op='-' AND type='rule' GROUP BY project_sub_id) consume
+                WHERE budget.project_sub_id = consume.project_sub_id
+                UNION ALL
+                SELECT budget.id,budget.type,budget.project_id,budget.project_name,budget.project_sub_name,budget.budget,consume.consume,'Percent' AS percent,'tax' AS feetype FROM
+                (SELECT project_sub_id AS id,'税金' AS type,project_name,project_id,project_sub_name,project_sub_id,SUM(tax) budget FROM tbl_measure WHERE `status` = '30' GROUP BY project_sub_id) budget,
+                (SELECT SUM(amount) consume,project_sub_id FROM tbl_measure_consume WHERE op='-' AND type='tax' GROUP BY project_sub_id) consume
+                WHERE budget.project_sub_id = consume.project_sub_id) t
+                WHERE 1=1
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="type" header="费用类型" allowSort="true" width="150"/>
+        <column key="project_name" header="项目名称" allowSort="true" width="150"/>
+        <column key="project_sub_name" header="项目子项名称" allowSort="true" width="150"/>
+        <column key="budget" header="预算金额（元）" width="150"/>
+        <column key="consume" header="当前消耗量（元）" width="150"/>
+        <column key="percent" header="消耗进度" width="150" fnRender="fnRenderPercent"/>
+        <column key="id" header="详情" width="80" fnRender="fnRenderDetail"/>
+    </query>
+    
+
+    <query id="measure_consume_detail" key="id" tableName="预算消耗" widthType="px" pageSize="200">
+        <sql>
+            <![CDATA[
+                    SELECT id, consume_name,concat(op,amount) amount, operator, operate_time FROM tbl_measure_consume
+                    WHERE 1=1
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="consume_name" header="变更说明" allowSort="true" width="150"/>
+        <column key="amount" header="变更量（元）" allowSort="true" width="150"/>
+        <column key="operator" header="变更人" allowSort="true" width="150"/>
+        <column key="operate_time" header="变更时间" width="150" dateFormat="yyyy-mm-dd"/>
+    </query>
+    
+    <query id="fee_list" key="id" tableName="规费列表" className="com.radish.master.entity.project.Fee" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" header="编号" hidden="true"/>
+        <column key="projectName" header="项目名称" classType="String" width="150"/>
+        <column key="projectSubName" header="子项名称" classType="String" width="150"/>
+        <column key="name" header="上报名称" classType="String" width="150"/>
+        <column key="amount" header="上报金额" classType="String" width="150"/>
+        <column key="status" header="状态" classType="String" render="10=新建,20=审批中,30=审批通过"/>
+        <column key="id" header="操作" classType="String" fnRender="fnRenderDetail"/>
+    </query>
+    
+    <query id="fee_detail_list" key="id" tableName="规费列表" className="com.radish.master.entity.project.FeeDetail" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" header="编号" hidden="true"/>
+        <column key="name" header="名称" classType="String" width="150"/>
+        <column key="price" header="上报金额（元）" classType="String" width="150"/>
+        <column key="notes" header="说明" classType="String"/>
+        <column key="id" header="操作" classType="String" fnRender="fnRenderDelete"/>
+    </query>
+    
+    <query id="fee_detail_overview" key="id" tableName="规费列表" widthType="px" pageSize="20">
+    
+        <sql>
+            <![CDATA[
+              SELECT f.project_name, f.project_sub_name,fd.`name`,fd.remark,fd.price,fd.notes
+              FROM tbl_fee_detail fd,tbl_fee f
+              WHERE fd.fee_id = f.id AND 1=1
+            ]]>
+        </sql>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" header="编号" hidden="true"/>
+        <column key="project_name" header="项目名称" classType="String"/>
+        <column key="project_sub_name" header="子项名称" classType="String"/>
+        <column key="name" header="名称" classType="String" width="150"/>
+        <column key="notes" header="说明" classType="String"/>
+        <column key="price" header="上报金额（元）" classType="String" width="150"/>
+    </query>
+    <query id="feePay_list" key="id" tableName="规费支付列表" className="com.radish.master.entity.project.Fee" widthType="px" pageSize="20" order="createDateTime desc">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" header="编号" hidden="true"/>
+        <column key="type" header="类型" render="10=规费,20=管理费"/>
+        <column key="projectName" header="项目名称" classType="String" width="150"/>
+        <column key="projectSubName" header="子项名称" classType="String" width="150"/>
+        <column key="name" header="上报名称" classType="String" width="150"/>
+        <column key="amount" header="上报金额" classType="String" width="150"/>
+        <column key="createDateTime" header="上报日期" classType="Date" dateFormat="yyyy-mm-dd"  width="150" allowSort="true"/>
+        <column key="status" header="状态" classType="String" render="10=新建,20=审批中,30=审批通过"/>
+        <column key="id" header="操作" classType="String" fnRender="fnRenderDetail"/>
+    </query>
+    
+    <query id="tax_list" key="id" tableName="规费列表" className="com.radish.master.entity.project.Tax" widthType="px" pageSize="20">
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="id" header="编号" hidden="true"/>
+        <column key="projectName" header="项目名称" classType="String" width="150"/>
+        <column key="projectSubName" header="子项名称" classType="String" width="150"/>
+        <column key="name" header="上报名称" classType="String" width="150"/>
+        <column key="amount" header="上报金额" classType="String" width="150"/>
+        <column key="createDateTime" header="上报日期" classType="Date" dateFormat="yyyy-mm-dd"  width="150" allowSort="true" order="createDateTime desc"/>
+        <column key="status" header="状态" classType="String" render="10=新建,20=审批中,30=审批通过"/>
+        <column key="id" header="操作" classType="String" fnRender="fnRenderDetail"/>
+    </query>
+</queryContext>

@@ -1,0 +1,116 @@
+<section class="content-header">
+    <h1>
+        工程量上报
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">项目信息</a></li>
+        <li class="active">工程量上报</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv" >
+                    <select id="projectID" class="form-control select2" name="pv.project_id" style="width:200px;" operator="eq">
+                    	<option selected="selected" value="">选择一个项目</option>
+                    </select>
+                    <select  class="form-control select2" name="pv.sblx" style="width:200px;" operator="eq">
+                    	<option selected="selected" value="">选择一个类型</option>
+                    	<option value="10">包清工</option>
+                    	<option value="20">包工包料</option>
+                    	<option value="30">机械</option>
+                    </select>
+                    <select id="htbzid" class="form-control select2" name="l.construction_team_id" style="width:200px;" operator="eq">
+                        <option selected="selected" value="">选择一个班组</option>
+                    </select>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" data-btn-type="print">打印报表</button>
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="volume_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var volumeTable, winId = "volumeWin";
+    var projectOptions = '${projectOptions?default(0)}',options=0;
+    if(projectOptions != 0){
+    	options = JSON.parse(projectOptions);
+    }
+    var htbzs = '${htbzs?default(0)}',htbz=0;
+    if(htbzs != 0){
+        htbz = JSON.parse(htbzs);
+    }
+    
+    var volumeManageObject = {
+            toAudit: function (volumeID) {
+            	modals.openWin({
+	                 winId:winId,
+	                 title:'工程量上报详情',
+	                 width:'1200px',
+	                 url:basePath+"/projectvolume/detailouter/"+volumeID            
+               });
+            }
+    }
+    
+    $(function (){
+    	volumeTable = new CommonTable("volume_table", "volume_list_print", "searchDiv", null);
+        
+        //绑定按钮事件
+        $("button[data-btn-type]").click(function () {
+            var action = $(this).data("btn-type");
+            var rowId = volumeTable.getSelectedRowId();
+            switch (action) {
+                case "print":
+                    if(!rowId){
+                        modals.info('请选择要打印的行');
+                        return false;
+                    }
+                    ajaxPost(basePath + '/projectvolume/getBzid', {id:rowId}, function (data) {
+                    	var pid = volumeTable.getSelectedRowData().project_id;
+                        var url = basePath+"/ureport/preview?_u=file:project_volume.ureport.xml&_t=1,5&id="+rowId+"&pid="+pid+"&bzid="+data.data+"&sj="+volumeTable.getSelectedRowData().endTime;
+                   	 	window.open(url);
+                    });
+                    
+                    break;
+               
+            }
+        });
+        
+        if(options != 0){
+            for (var i = 0, len = options.length; i < len; i++) {
+                var option = options[i];
+                $('#projectID').append("<option value=\"" + option.value + "\">" + option.data + "</option>");
+            }
+            $(".select2").select2();
+        }
+        if(htbz != 0){
+            for (var i = 0, len = htbz.length; i < len; i++) {
+                var bzs = htbz[i];
+                $('#htbzid').append("<option value=\"" + bzs.id + "\">" + bzs.teamName + "</option>");
+            }
+            $(".select2").select2();
+        }
+        
+    });
+    
+    function fnRenderVolume(value, type, rowObj){
+        var oper = "&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='volumeManageObject.toAudit(\"" + rowObj.id + "\")'>查看详情</a>";
+        return oper;
+    }
+</script>

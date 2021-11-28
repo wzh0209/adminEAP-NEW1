@@ -1,0 +1,102 @@
+<section class="content-header">
+    <h1>
+        报销部门审核
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">财务账目管理</a></li>
+        <li class="active">报销部门审核</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv" >
+                    <input placeholder="请输入报销编号" name="bx.number" class="form-control" type="search" likeOption="true"operator="like" />
+                    <input placeholder="请输入申请人姓名" name="bx.reername" class="form-control" type="search" likeOption="true"operator="like" />
+                    <input id = "userid" name="u.auditdept" class="form-control" type="search" style="display: none"/>  
+                    <select id="auidter" name="bx.bmshr"  class="form-control"  onchange="changestatus()">
+                    	<option value="">待审核</option>
+                    	<option value="${auidter}">已审核</option>
+                    </select>
+                    <input id = "status" name="bx.status" value="20" class="form-control" type="search" style="display: none"/>  
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                       
+                    </div>
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="volume_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var volumeTable, winId = "volumeWin";
+    var jkr = '${deptid?default(0)}';
+    $("#userid").val(jkr);
+    var volumeManageObject = {
+            submit: function (id) {
+            	modals.openWin({
+                    winId:winId,
+                    title:'创建',
+                    width:'1000px',
+                    url:basePath+"/reimburse/bmlook?id="+id,
+                    hideFunc:function(){
+                    	volumeTable.reloadData();
+                    }
+                    
+                   });
+            },
+            look:function(id){
+            	modals.openWin({
+                    winId:winId,
+                    title:'查看',
+                    width:'1000px',
+                    url:basePath+"/reimburse/cwlook?lx=look&id="+id,
+                    hideFunc:function(){
+                    	volumeTable.reloadData();
+                    }
+                    
+                   });
+           }
+    }
+    function changestatus(){
+		var auidter = $("#auidter").val();
+		if(auidter){
+			$("#status").val("");
+		}else{
+			$("#status").val("20");
+		}
+    }
+    $(function (){
+    	volumeTable = new CommonTable("volume_table", "reimburse_bm", "searchDiv", null);
+        
+        
+    });
+    
+    function fnRenderXQ(value, type, rowObj){
+        if(rowObj.status=="部门审核"){
+        	var oper ="<a href='javascript:void(0)' onclick='volumeManageObject.submit(\"" + value + "\")'>查看审核</a>";
+            return oper;
+        }else{
+        	var oper = "<a href='javascript:void(0)' onclick='volumeManageObject.look(\"" + value + "\")'>查看</a>";
+        	return oper;
+        }
+    	
+    }
+
+
+    function lookyy(value){
+    	modals.info(value);
+    }
+   
+</script>

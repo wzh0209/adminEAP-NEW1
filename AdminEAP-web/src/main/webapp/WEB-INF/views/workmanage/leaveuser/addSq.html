@@ -1,0 +1,142 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><li class="fa fa-remove"></li></button>
+    <h5 class="modal-title">离职信息</h5>
+</div>
+
+<div class="modal-body" style="max-height:500px;overflow-y:auto;">
+
+    <form id="user-form1" name="user-form" class="form-horizontal">
+        <input type="hidden" name="id">
+        <div class="box-body">
+        	<div class="form-group">
+                    <label for="leaveTime" class="col-sm-2 control-label">离职时间</label>
+                    <div class="col-sm-9">
+						<input type="text" class="form-control" data-flag="datepicker" data-format="yyyy-mm-dd" name="leaveTime" id="leaveTime" placeholder="离职时间">
+                    </div>
+            </div>
+            <div class="form-group">
+                    <label for="leaveReason" class="col-sm-2 control-label">离职原因</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" id="leaveReason" name="leaveReason" placeholder="离职原因" rows="5"></textarea>
+                    </div>
+            </div>
+            <input type="hidden" name="fileId" id="fileId">
+			<div class="form-group" align="center" id="wjscid">
+				<div class="btn btn-default btn-file" id="uploadFile">
+					<i class="fa fa-paperclip"></i> 上传文件附件(Max. 10MB)
+				</div>
+			</div>
+			<div class="form-group" id="file_container">
+				<input type="file" name="file"  id="attachment">
+			</div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer text-right">
+            <!--以下两种方式提交验证,根据所需选择-->
+            <button type="button" class="btn btn-default" data-btn-type="cancel" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary" data-btn-type="save">提交</button>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+
+</div>
+<script>
+    //tableId,queryId,conditionContainer
+    var form =null;
+    
+    
+    $(function() {
+        //初始化控件
+        form=$("#user-form1").form({baseEntity:false});
+        //数据校验
+        $("#user-form1").bootstrapValidator({
+            message : '请输入有效值',
+            feedbackIcons : {
+                valid : 'glyphicon glyphicon-ok',
+                invalid : 'glyphicon glyphicon-remove',
+                validating : 'glyphicon glyphicon-refresh'
+            },
+            submitHandler : function(validator, userform, submitButton) {
+                modals.confirm('确认提交申请？', function() {
+                    //Save Data，对应'submit-提交'
+                    var params = form.getFormSimpleData();
+                    ajaxPost(basePath+'/leaveuser/startBmsh', params, function(data, status) {
+                        if (data.success) {
+                        	modals.hideWin("lzs"); 
+                            modals.correct("请联系部门审核人及时审核");
+                            loadPage(basePath+"/leaveuser/addindex");
+                        } else {
+                            modals.error(data.message);
+                        }                
+                    });
+                });
+            },
+            fields : {
+            	leaveReason : {
+                    validators : {
+                        notEmpty : {
+                            message : '请输入离职原因'
+                        }
+                    }
+                },
+                leaveTime : {
+                    validators : {
+                        notEmpty : {
+                            message : '请输入离职时间'
+                        }
+                    }
+                }
+            }
+        });
+        form.initComponent();
+    });
+
+
+    var fileinputDefaults = {
+            maxFileSize: 102400,
+            maxFileCount:5,
+            previewSettings: {
+                image: {width: "160px", height: "60px"},
+                text: {width: "213px", height: "160px"},
+                object: {width: "160px", height: "auto"},
+                pdf: {width: "160px", height: "160px"},
+                other: {width: "160px", height: "160px"}
+            },
+            previewZoomSettings: {
+                image: {width: "auto", height: "auto", 'max-width': "100%", 'max-height': "100%"},
+                text: {width: "100%", height: "100%", 'min-height': "480px"},
+                object: {width: "auto", height: "100%", 'min-height': "480px"},
+                pdf: {width: "100%", height: "100%", 'min-height': "480px"},
+                other: {width: "auto", height: "100%", 'min-height': "480px"}
+            },
+            uploadUrl: basePath + "/bghjFile/uploadMultipleFile",
+            deleteUrl: basePath + "/bghjFile/deletefile",
+            allowedPreviewTypes : ['image', 'object']
+      }
+      var defaults = {
+            title: "请上传附件",
+            getFileResultUrl: basePath+"/bghjFile/getFiles",
+            downloadFileUrl: basePath+"/bghjFile/download/",
+            fileinput: fileinputDefaults,
+            showType:'detail',
+            window:true,
+            callback:function(fileId,oldfileIds){
+                this.showFiles({
+                    fileIds:fileId,
+                    type:'preview'
+                });
+            }
+      }
+      
+      $("#uploadFile").file($.extend({}, defaults, {
+          title:"请上传附件",
+          fileinput:$.extend({}, fileinputDefaults, {
+              uploadExtraData: {"fileField":"fileId"}
+          }),
+          showContainer:'#attachment',
+          fileIdContainer:"[name='fileId']",
+          extraPreviewConfig:{
+              "fileField":"fileId"
+          }
+      }));
+</script>

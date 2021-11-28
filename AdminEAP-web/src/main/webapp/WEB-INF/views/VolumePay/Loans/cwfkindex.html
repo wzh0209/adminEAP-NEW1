@@ -1,0 +1,148 @@
+<section class="content-header">
+    <h1>
+        个人借款财务付款
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">财务账目管理</a></li>
+        <li class="active">个人借款财务付款</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="dataTables_filter" id="searchDiv" >
+                    <input placeholder="请输入借款编号" name="jk.number" class="form-control" type="search" likeOption="true"operator="like" />
+                    <input placeholder="请输入借款姓名" name="jk.loanname" class="form-control" type="search" likeOption="true"operator="like" />
+                    <input placeholder="请输入借款金额" name="jk.money" class="form-control" type="search" likeOption="true"operator="like" />
+                    <select name="jk.status"  class="form-control" >
+                    	<option value="">请选择状态</option>
+                    	<option value="60">待付款</option>
+                    	<option value="70">已付款未还款</option>
+                    	<option value="80">部分还款</option>
+                    	<option value="110">已还款</option>
+                    </select>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                        <button type="button" class="btn btn-default" data-btn-type="print">打印</button>
+                    </div>
+                    
+                </div>
+                <div class="box-body box-body-mobile">
+                    <table id="volume_table" class="table table-bordered table-striped table-hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var form = $("#searchDiv").form({baseEntity: false}), initData={};
+    var volumeTable, winId = "volumeWin";
+    var jkr = '${deptid?default(0)}';
+    
+    var volumeManageObject = {
+            submit: function (id) {
+            	modals.openWin({
+                    winId:winId,
+                    title:'创建',
+                    width:'1000px',
+                    url:basePath+"/loans/cwlook?id="+id,
+                    hideFunc:function(){
+                    	volumeTable.reloadData();
+                    }
+                    
+                   });
+            },
+            look:function(id){
+            	modals.openWin({
+                    winId:winId,
+                    title:'创建',
+                    width:'1000px',
+                    url:basePath+"/loans/cwlook?lx=look&id="+id,
+                    hideFunc:function(){
+                    	volumeTable.reloadData();
+                    }
+                    
+                   });
+           },
+           jz:function(id){
+        	   ajaxPost(basePath+'/loans/dojz', {id:id}, function(data) {
+                   if(data.success){
+                   	volumeTable.reloadData();
+                       modals.info("记账成功");
+                       
+                   }                
+               }); 
+           },
+           lookHk:function(id){
+           	modals.openWin({
+                winId:winId,
+                title:'创建',
+                width:'1000px',
+                url:basePath+"/loans/cwlook?lx=look&id="+id+"&iscw=1",
+                hideFunc:function(){
+                	volumeTable.reloadData();
+                }
+                
+               });
+       }
+    }
+    
+    $(function (){
+    	volumeTable = new CommonTable("volume_table", "loan_cw", "searchDiv", null);
+    	//绑定按钮事件
+        $("button[data-btn-type]").click(function () {
+            var action = $(this).data("btn-type");
+            var rowId = volumeTable.getSelectedRowId();
+            switch (action) {
+            case "print":
+            	 if(!rowId){
+	                    modals.info('请选择要打印的行');
+	                    return false;
+	                }
+	                var url = basePath+"/ureport/preview?_u=file:jk.ureport.xml&_t=1,5&id="+rowId;
+            	 	window.open(url);
+	                
+                break;       		
+            }
+        });
+    	
+    });
+    
+    function fnRenderXQ(value, type, rowObj){
+    	var oper ="";
+    	if(rowObj.status=="财务付款"){
+    		oper += "<a href='javascript:void(0)' onclick='volumeManageObject.submit(\"" + value + "\")'>查看付款</a>";
+       	}else if(rowObj.status=="已付款"){
+       		if(rowObj.isjz=="0"){
+       			oper += "<a href='javascript:void(0)' onclick='volumeManageObject.look(\"" + value + "\")'>查看</a>";
+       			oper += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='volumeManageObject.jz(\"" + value + "\")'>记账</a>";
+           	}else{
+           		oper += "<a href='javascript:void(0)' onclick='volumeManageObject.lookHk(\"" + value + "\")'>查看还款</a>";
+            }
+       		oper += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='printzfd(\"" + value + "\")'>补打支付单</a>";
+        }else if(rowObj.status=="部分还款"){
+        	oper += "<a href='javascript:void(0)' onclick='volumeManageObject.lookHk(\"" + value + "\")'>查看还款</a>";
+       		oper += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='printzfd(\"" + value + "\")'>补打支付单</a>";
+        }else if(rowObj.status=="已还款"){
+        	oper += "<a href='javascript:void(0)' onclick='volumeManageObject.look(\"" + value + "\")'>查看</a>";
+       		oper += "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:void(0)' onclick='printzfd(\"" + value + "\")'>补打支付单</a>";
+        }
+        return oper;
+    }
+    function printzfd(id){
+    	modals.openWin({
+            winId:"printzf",
+            title:'支付单支付方式确认',
+            width:'500px',
+            url:basePath+"/loans/zffs?id="+id
+        });
+    }
+   
+</script>

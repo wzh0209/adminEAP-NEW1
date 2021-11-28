@@ -1,0 +1,107 @@
+
+<section class="content-header">
+    <h1>
+        库存消耗
+        <small>列表</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="${basePath}"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">库存信息</a></li>
+        <li class="active">库存出库</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs pull-right">
+                   
+                    <li class="active"><a href="#tab-content-list" data-toggle="tab" id="nav-tab-list"><i class="fa fa-list-ul"></i></a></li>
+                    <li class="pull-left header"><i class="fa fa-user"></i><small>物料消耗列表</small></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-content-list">
+			            <div class="box">
+			                <!-- /.box-header -->
+			                <div class="dataTables_filter" id="searchDiv" style="display: none">
+			                    <!--查询条件-->
+			                   <select placeholder="请输入项目名" name="p.project_name" class="form-control select2" id="project_name" operator="like" likeOption="true" style="width:20%">
+                               	<option selected="selected" value="">选择一个项目</option>
+                               </select>
+                               <select  placeholder="请输入申请单编号" name="t.id" class="form-control select2" id="budget_id" operator="like" likeOption="true" style="width:20%">
+			                  	<option selected="selected" value="">选择一个申请单</option>
+			                   </select>
+			                    <div class="btn-group">
+			                        <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+			                        <button type="button" class="btn btn-default" data-btn-type="reset">重置</button>
+                                    <button type="button" class="btn btn-primary" data-btn-type="out">消耗出库</button>
+			                    </div>
+			                </div>
+			                <div class="box-body box-body-mobile">
+			                    <table id="stock_table" class="table table-bordered table-striped table-hover">
+			                    </table>
+			                </div>
+			            </div>
+		            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    var stockQueryTable, winId = "stockQueryWin";
+    var xms = '${xm?default(0)}',xm=0;
+    if(xms != 0){
+    	xm = JSON.parse(xms);
+    }
+    var bgs = '${bg?default(0)}',bg=0;
+    if(bgs != 0){
+    	bg = JSON.parse(bgs);
+    }
+    $(function (){
+        stockQueryTable = new CommonTable("stock_table", "stock_out_list", "searchDiv", null);
+        //绑定按钮事件
+        $("button[data-btn-type]").click(function () {
+            var action = $(this).data("btn-type");
+            var rowId = stockQueryTable.getSelectedRowId();
+            switch (action) {
+                case "out":
+                	if(!rowId){
+                        modals.info('请选择要出库的行');
+                        return false;
+                    };
+                    modals.confirm('确认出库？', function() {
+                        console.log("selectedID: "+rowId);
+                        ajaxPost(basePath+"/stock/saveOut?id="+rowId,null,function(data) {
+                            console.log(data);
+                            if(data.success){
+                                modals.hideWin(winId);
+                                stockQueryTable.reloadData();
+                                modals.info("数据保存成功");
+                            }
+                        });
+                    });
+                    break;
+            }
+        });
+        if(xm != 0){
+            for (var i = 0, len = xm.length; i < len; i++) {
+                var x = xm[i];
+                $('#project_name').append("<option value=\"" + x.data + "\">" + x.data + "</option>");
+            }
+            $(".select2").select2();
+        }
+        
+        if(bg != 0){
+            for (var i = 0, len = bg.length; i < len; i++) {
+                var x = bg[i];
+                $('#budget_id').append("<option value=\"" + x.id + "\">" + x.data + "</option>");
+            }
+            $(".select2").select2();
+        }
+    });
+
+</script>

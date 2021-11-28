@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queryContext xmlns="http://www.example.org/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/query query.xsd">
+    
+    
+    <query id="checkRecordList" key="id" tableName="验收记录文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.number number , wj.parent_ID parent_ID, wj.create_time create_time,
+              wj.update_time update_time ,p.project_name pName ,wj.proid pid ,wj.name name 
+			  FROM tbl_checkItem wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="number" header="文件编号" classType="String" allowSort="true" width="150"/>
+        <column key="name" header="文件名称" classType="String" allowSort="true" width="150"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    <query id="checkRecordListMb" key="id" tableName="验收记录模板列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.name name , wj.parent_ID parent_ID, wj.create_time create_time,
+              wj.update_time update_time 
+			  FROM tbl_checkItemMb wj 
+			  WHERE 1=1 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="name" header="模板名称" classType="String" allowSort="true" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="id" header="模板详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    
+    <query id="proEditLetters_List" key="id" tableName="工程变更函件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,wj.number number ,  wj.create_time create_time, wj.type type,
+              wj.update_time update_time ,p.project_name pName ,wj.proid pid ,wj.name name 
+			  FROM tbl_proEditLetters wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+         <column key="type" header="变更函件类型" classType="String" width="150" render="10=图纸会审纪要,20=设计变更单,30=工程签证单,40=工程联系单,50=文件收发登记表,60=原材料进场验收表"/>
+        <column key="number" header="文件编号" classType="String" allowSort="true" width="150"/>
+        <column key="name" header="文件名称" classType="String" allowSort="true" width="150"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    
+    <query id="videofile_List" key="id" tableName="施工质量影像文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,  wj.create_time create_time, wj.type type,
+              wj.update_time update_time ,p.project_name pName ,wj.proid pid ,wj.name name 
+			  FROM tbl_videoFile wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+         <column key="type" header="变更函件类型" classType="String" width="150" render="10=地基基础,20=主体,30=屋面,40=装饰装修,50=安装,60=整体"/>
+         <column key="name" header="文件名称" classType="String" width="150"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="id" header="文件详情" width="80" fnRender="fnRenderXq"/>
+    </query>
+    
+    <query id="checkDqFile_List" key="id" tableName="定期检查记录文件列表" widthType="px">
+        <sql>
+            <![CDATA[
+              SELECT wj.ID id,  wj.create_time create_time, wj.number number, wj.status status,wj.isfk isfk,
+              p.project_name pName ,wj.proid pid 
+			  FROM tbl_checkDq wj ,tbl_project p 
+			  WHERE 1=1 and wj.proid = p.id 
+            ]]>
+        </sql>
+        <column key="id" hidden="true" header="id" width="80"/>
+        <column key="rowIndex" header="序号" width="80"/>
+        <column key="pName" header="所属项目" classType="String" width="150"/>
+        <column key="number" header="编号" classType="String" width="150"/>
+        <column key="create_time" header="创建日期" classType="String" width="150" allowSort="true" />
+        <column key="status" header="状态" classType="String" width="150" render="10=新建,20=项目回复,30=复查,40=完成"/>
+        <column key="isfk" header="罚款详情" width="80" fnRender="fnRenderFk"/>
+        <column key="id" header="管理" width="80" fnRender="fnRenderGl"/>
+    </query>
+    
+    <query id="lookfkdList" key="id" tableName="罚款单列表" widthType="px">
+		 <sql>
+            <![CDATA[
+              SELECT *
+			  FROM tbl_checkfkd
+			  WHERE 1=1 and (isqr<>'1' or isqr is null)
+            ]]>
+        </sql>
+		
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="ID" header="id" hidden="true"/>
+		<column key="wgbz" header="违规班组" operator="like" width="100"  />
+		<column key="wgtime" header="罚款时间" operator="like" width="80" allowSort="true" />
+		<column key="fkje" header="罚款金额" align="left" operator="eq" width="100"  />
+		<column key="wgtype" header="罚款来源" align="center" operator="eq" width="100"  render="10=质量检查,20=安全检查"/>
+		<column key="checkDqId" header="详情" width="80" fnRender="fnRenderXq"/>
+		<column key="ID" header="操作" width="80" fnRender="fnRenderAdd"/>
+	</query>
+	
+	<query id="lookfkdList_QR" key="id" tableName="罚款单列表_已确认执行" widthType="px">
+		 <sql>
+            <![CDATA[
+              SELECT *
+			  FROM tbl_checkfkd
+			  WHERE 1=1 and isqr='1'
+            ]]>
+        </sql>
+		
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="ID" header="id" hidden="true"/>
+		<column key="wgbz" header="违规班组" operator="like" width="100"  />
+		<column key="wgtime" header="罚款时间" operator="like" width="80" allowSort="true" />
+		<column key="fkje" header="罚款金额" align="left" operator="eq" width="100"  />
+		<column key="wgtype" header="罚款来源" align="center" operator="eq" width="100"  render="10=质量检查,20=安全检查"/>
+		<column key="checkDqId" header="详情" width="80" fnRender="fnRenderXq"/>
+		<column key="ID" header="操作" width="80" fnRender="fnRenderDelete"/>
+	</query>
+	
+	<query id="gcqzd_list" key="id" tableName="工程签证单列表" className="com.radish.master.entity.qualityCheck.Gcqzd"
+		pageSize="10"  widthType="px" order="create_time asc">
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="id" hidden="true"/>
+		<column key="proname" header="所属项目" operator="like" width="100"  />
+		<column key="number" header="编号" operator="like" width="100"  />
+		<column key="create_name" header="创建人" operator="like" width="100"  />
+		<column key="create_time" header="创建时间" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+	</query>
+	
+	<query id="gclxd_list" key="id" tableName="工程联系单列表" className="com.radish.master.entity.qualityCheck.Gclxd"
+		pageSize="10"  widthType="px" order="create_time asc">
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="id" hidden="true"/>
+		<column key="proname" header="所属项目" operator="like" width="100"  />
+		<column key="number" header="编号" operator="like" width="100"  />
+		<column key="create_name" header="创建人" operator="like" width="100"  />
+		<column key="create_time" header="创建时间" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+	</query>
+	<query id="yclrc_list" key="id" tableName="原材料入场记录" className="com.radish.master.entity.qualityCheck.Yclrc"
+		pageSize="10"  widthType="px" order="create_time asc">
+		<column key="rowIndex" header="序号" width="50" allowSort="false"/>
+		<column key="id" header="id" hidden="true"/>
+		<column key="proname" header="所属项目" operator="like" width="100"  />
+		<column key="number" header="编号" operator="like" width="100"  />
+		<column key="matname" header="材料名称" operator="like" width="100"  />
+		<column key="create_name" header="创建人" operator="like" width="100"  />
+		<column key="create_time" header="创建时间" operator="like" width="80" allowSort="true" dateFormat="yyyy-mm-dd" />
+		 <column key="id" header="图片" width="80" fnRender="fnRenderfj"/>
+	</query>
+</queryContext>
